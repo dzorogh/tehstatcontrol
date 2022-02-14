@@ -20,6 +20,7 @@ class PageResource extends JsonResource
             'slug' => $this->slug,
             'content' => $this->content,
             'excerpt' => $this->excerpt,
+            'image' => $this->image,
         ];
     }
 }

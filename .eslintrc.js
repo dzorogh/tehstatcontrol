@@ -1,18 +1,21 @@
 module.exports = {
-  env: {
-    browser: true,
-    es2021: true,
-    "vue/setup-compiler-macros": true,
+  env:              {
+    browser:                     true,
+    es2021:                      true,
+    'vue/setup-compiler-macros': true,
   },
-  extends: [
-    "plugin:vue/vue3-recommended",
-    "plugin:tailwindcss/recommended"
+  extends:          [
+    'plugin:vue/vue3-recommended',
+    'plugin:tailwindcss/recommended',
   ],
-  parserOptions: {
-    ecmaVersion: "latest",
-    parser: "@typescript-eslint/parser",
-    sourceType: "module",
+  parserOptions:    {
+    ecmaVersion: 'latest',
+    parser:      '@typescript-eslint/parser',
+    sourceType:  'module',
   },
-  plugins: ["@typescript-eslint", "tailwindcss"],
-  "ignorePatterns": ["nova-components/**/*"],
-};
+  plugins:          ['@typescript-eslint', 'tailwindcss'],
+  'ignorePatterns': ['nova-components/**/*'],
+  rules:            {
+    'vue/no-v-html': 'off',
+  },
+}

@@ -24,6 +24,7 @@ class AttributeResource extends JsonResource
             'dataType' => $this->data_type,
             'byYear' => !!$this->by_year,
             'showOnChart' => !!$this->show_on_chart,
+            'ratingDirection' => $this->rating_direction,
             'groupId' => $this->group_id,
             'group' => new GroupResource($this->whenLoaded('group')),
             'values' => AttributeValueResource::collection($this->whenLoaded('values'))

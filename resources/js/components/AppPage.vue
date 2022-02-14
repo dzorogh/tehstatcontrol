@@ -24,16 +24,22 @@
 
     <article
       v-if="page && !loading"
-      class="prose prose-xl"
+      class="p-12 bg-zinc-100 prose prose-xl"
     >
       <AppPageTitle :title="page.title" />
 
-      <p>
-        [image]
+      <p v-if="page.image">
+        <img
+          :src="page.image"
+          alt=""
+        >
       </p>
 
-      {{ page.excerpt }}
-      {{ page.content }}
+      <p>
+        {{ page.excerpt }}
+      </p>
+      
+      <div v-html="page.content" />
     </article>
   </div>
 </template>

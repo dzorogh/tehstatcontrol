@@ -1,68 +1,72 @@
 <template>
-  {{ selectedFilters }}
-  <div class="flex flex-row gap-4 mb-4">
-    <div class="w-64">
-      <AppSelect
-        v-model="selectedFilters.year"
-        :options="filters.years"
-        title="Год"
-        option-label="value"
-        option-value="id"
-        :classes="selectClasses"
-      />
+  <div>
+    <div class="flex flex-row gap-4 mb-4">
+      <div class="w-64">
+        <AppSelect
+          v-model="selectedFilters.year"
+          :options="filters.years"
+          title="Год"
+          option-label="value"
+          option-value="id"
+          :classes="selectClasses"
+        />
+      </div>
+      <div class="w-64">
+        <AppSelect
+          v-model="selectedFilters.category"
+          :options="filters.categories"
+          title="Тип техники"
+          option-label="title"
+          option-value="id"
+          :classes="selectClasses"
+        />
+      </div>
+      <div class="w-64">
+        <AppSelect
+          v-model="selectedFilters.brands"
+          :options="filters.brands"
+          :multiple="true"
+          title="Бренды"
+          option-label="title"
+          option-value="id"
+          :classes="selectClasses"
+        />
+      </div>
     </div>
-    <div class="w-64">
-      <AppSelect
-        v-model="selectedFilters.category"
-        :options="filters.categories"
-        title="Тип техники"
-        option-label="title"
-        option-value="id"
-        :classes="selectClasses"
-      />
-    </div>
-    <div class="w-64">
-      <AppSelect
-        v-model="selectedFilters.brands"
-        :options="filters.brands"
-        :multiple="true"
-        title="Бренды"
-        option-label="title"
-        option-value="id"
-        :classes="selectClasses"
-      />
-    </div>
-  </div>
-  <div
-    v-if="sortedFilterAttributes.length"
-    class="flex flex-row flex-wrap gap-4"
-  >
     <div
-      v-for="attribute in sortedFilterAttributes"
-      :key="attribute.id"
+      v-if="sortedFilterAttributes.length"
+      class="flex flex-row flex-wrap gap-4"
     >
-      <AppSelect
-        :model-value="getAttributeFilter(attribute.id)"
-        :options="attribute.values"
-        :title="attribute.title"
-        
-        :option-label="getAttributeOptionLabel.bind(null, attribute)"
-        option-value="value"
-        :multiple="true"
-        :classes="selectClasses"
-        
-        @update:model-value="setAttributeFilter($event, attribute.id)"
-      />
+      <div
+        v-for="attribute in sortedFilterAttributes"
+        :key="attribute.id"
+      >
+        <AppSelect
+          :model-value="getAttributeFilter(attribute.id)"
+          :options="attribute.values"
+          :title="attribute.title"
+          
+          :option-label="getAttributeOptionLabel.bind(null, attribute)"
+          option-value="value"
+          :multiple="true"
+          :classes="selectClasses"
+          
+          @update:model-value="setAttributeFilter($event, attribute.id)"
+        />
+      </div>
     </div>
-  </div>
-  <div
-    v-if="hasFilters"
-    class="mt-4"
-  >
-    <button class="inline-flex items-center py-1 px-3 text-zinc-100 bg-teal-600 hover:bg-teal-500 rounded cursor-pointer select-none">
-      <TrashIcon class="mr-2 w-4 h-4" />
-      Сбросить фильтры
-    </button>
+    <div
+      v-if="hasFilters"
+      class="mt-4"
+    >
+      <button
+        class="inline-flex items-center py-1 px-3 text-sm text-zinc-100 bg-teal-600 hover:bg-teal-500 rounded cursor-pointer select-none"
+        @click="resetFilters"
+      >
+        <TrashIcon class="mr-2 w-4 h-4" />
+        Сбросить фильтры
+      </button>
+    </div>
   </div>
 </template>
 
@@ -102,6 +106,15 @@ const emptyFilters = {
 };
 
 const selectedFilters = reactive(emptyFilters);
+
+function resetFilters() {
+  console.log('Reset filters');
+  
+  selectedFilters.attributes = [];
+  selectedFilters.year = null;
+  selectedFilters.brands = null;
+  selectedFilters.category = null;
+}
 
 function getAttributeFilter(attributeId) {
   let result = [];

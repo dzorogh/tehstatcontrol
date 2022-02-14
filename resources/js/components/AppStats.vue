@@ -1,23 +1,6 @@
 <template>
   <div>
-    <div
-      v-if="pageLoading"
-      class="animate-pulse"
-    >
-      <div class="prose prose-xl">
-        <div class="mb-6 w-full h-14 bg-slate-700 rounded" />
-        <div class="mb-3 w-full h-4 bg-slate-700 rounded" />
-        <div class="mb-5 w-60 h-4 bg-slate-700 rounded" />
-      </div>
-      
-      <div class="grid grid-flow-col auto-cols-min gap-6 mb-8">
-        <div class="w-64 h-12 bg-slate-700 rounded" />
-        <div class="w-64 h-12 bg-slate-700 rounded" />
-        <div class="w-64 h-12 bg-slate-700 rounded" />
-      </div>
-      
-      <div class="w-full h-64 bg-slate-700 rounded" />
-    </div>
+    <AppStatsLoading v-if="pageLoading" />
     
     <div v-if="!pageLoading">
       <div
@@ -31,13 +14,22 @@
         </div>
       </div>
       
-      <div v-if="list">
+      <div v-if="list && list.data.length">
+        <AppStatsCharts
+          v-if="list.chart"
+          :selected="selectedChartTabIndex"
+          :tabs="list.chart"
+          @update:selected="selectedChartTabIndex = $event"
+        />
+        
+        <!--        <pre>{{ JSON.stringify(list.brandsStatsFormatted, null, 2) }}</pre>-->
+        
         <AppStatsFilters
           :filters="list.filters"
           @update:filters="updateFilters"
         />
         
-        <div class="">
+        <div>
           <AppStatsPagination
             class="my-4"
             position="top"
@@ -52,43 +44,21 @@
           >
             <table class="min-w-full">
               <thead>
-                <tr class="text-left text-zinc-200 bg-zinc-700">
-                  <th
-                    class="w-48"
-                    :class="[...cellClass]"
-                  >
-                    Категория
-                  </th>
-                  <th
-                    class="w-48"
-                    :class="[...cellClass]"
-                  >
-                    Бренд
-                  </th>
-                  <th
-                    class="w-auto"
-                    :class="[...cellClass]"
-                  >
-                    Модель
-                  </th>
-                  <th
-                    v-for="(filter, filterName) in sortedColumns"
-                    :key="filterName"
-                    class="w-40"
-                    :class="[...cellClass]"
-                  >
-                    {{ filter.title }}
-                  </th>
-                </tr>
+                <AppStatsHeadingRow
+                  :cell-class="cellClass"
+                  :columns="sortedColumns"
+                  :sort="list.sort"
+                  @change-sort="handleSort"
+                />
               </thead>
               <tbody>
-                <AppStatsRow
-                  v-for="product in list.data"
+                <AppStatsDataRow
+                  v-for="(product, index) in list.data"
                   :key="product.id"
-                  class="group bg-zinc-100 even:bg-zinc-200 hover:bg-zinc-300"
                   :product="product"
                   :cell-class="cellClass"
                   :columns="sortedColumns"
+                  :row-number="list.meta.from + index"
                 />
               </tbody>
             </table>
@@ -117,9 +87,12 @@
 import { useRoute } from 'vue-router';
 import { computed, reactive, ref, watch } from 'vue';
 import axios from 'axios';
+import { LineChart, BarChart, ExtractComponentData } from 'vue-chart-3';
+import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 // app
-import { formatDataType } from '../formatters/valueFormatters';
+import { formatDataType, formatPercent } from '../formatters/valueFormatters';
 
 // types
 import { Attribute } from '../types/Attribute';
@@ -128,7 +101,13 @@ import { Attribute } from '../types/Attribute';
 import AppPageTitle from './AppPageTitle.vue';
 import AppStatsFilters from './AppStatsFilters.vue';
 import AppStatsPagination from './AppStatsPagination.vue';
-import AppStatsRow from './AppStatsRow.vue';
+import AppStatsDataRow from './AppStatsDataRow.vue';
+import AppStatsHeadingRow from './AppStatsHeadingRow.vue';
+import AppStatsCharts from './AppStatsCharts.vue';
+import { Sort } from '../types/Sort';
+import { Filters } from '../types/Filters';
+import { Meta } from '../types/Meta';
+import AppStatsLoading from './AppStatsLoading.vue';
 
 const route = useRoute();
 
@@ -136,26 +115,21 @@ interface Params {
   filters: object;
   group_slug: string;
   page: number;
+  sort: Sort
 }
 
 interface List {
   data: Array<any>;
   dynamicColumns: Array<any>;
-  filters: {
-    years: Array<any>
-    categories: Array<any>
-    attributes: Array<any>
-    brands: Array<any>
-  };
+  filters: Filters;
   requestParams: Params;
-  meta: {
-    current_page: number
-    last_page: number
-    per_page: number
-    total: number
-    from: number
-    to: number
-  };
+  meta: Meta;
+  chart: {
+    attribute: Attribute
+    brands: string[]
+    values: number[]
+  }[];
+  sort: Sort
 }
 
 const list = ref<List>();
@@ -164,6 +138,10 @@ const params = reactive<Params>({
   filters: {},
   group_slug: route.params.group as string,
   page: 1,
+  sort: {
+    type: 'title',
+    direction: 'asc'
+  }
 });
 
 const pageLoading = ref(false);
@@ -191,6 +169,7 @@ watch(() => route.params.group, (newGroupSlug) => {
       
       getList()
         .finally(() => {
+          selectedChartTabIndex.value = 0;
           pageLoading.value = false;
         });
     });
@@ -206,6 +185,7 @@ function getList() {
       page: params.page,
       group_slug: params.group_slug,
       ...params.filters,
+      sort: params.sort
     })
     .then(({ data }) => {
       list.value = data;
@@ -218,6 +198,7 @@ function getList() {
 
 function updateFilters(filters) {
   params.filters = filters;
+  params.page = 1;
   
   getList();
 }
@@ -231,6 +212,16 @@ function updatePage(page) {
 const cellClass = [
   'py-4', 'px-6',
 ];
+
+const selectedChartTabIndex = ref(0);
+
+function handleSort(sort: Sort) {
+  params.sort = sort;
+  
+  console.log('handleSort', sort)
+  
+  getList();
+}
 
 </script>
 

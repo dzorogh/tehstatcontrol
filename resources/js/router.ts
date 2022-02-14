@@ -3,6 +3,7 @@ import AppHome from './components/AppHome.vue';
 import AppPage from './components/AppPage.vue';
 import AppError404 from './components/AppError404.vue';
 import AppStats from './components/AppStats.vue';
+import AppContacts from './components/AppContacts.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -13,6 +14,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'stats',
     path: '/stats/:group',
     component: AppStats,
+  },
+  {
+    name: 'contacts',
+    path: '/contacts',
+    component: AppContacts,
   },
   {
     name: 'page',

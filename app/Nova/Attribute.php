@@ -4,10 +4,12 @@ namespace App\Nova;
 
 use App\Enums\AttributeDataType;
 use App\Enums\RatingDirection;
+use App\Models\AttributeValue;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
@@ -71,7 +73,7 @@ class Attribute extends Resource
     public function fields(Request $request)
     {
         return [
-//            ID::make(__('ID'), 'id')->sortable(),
+            ID::make(__('ID'), 'id')->sortable(),
             Text::make(__('Название'), 'title')
                 ->rules('required'),
 
@@ -174,7 +176,7 @@ class Attribute extends Resource
         return $query->when(empty($request->get('orderByDirection')), function (Builder $query) {
             $query->getQuery()->orders = [];
 
-            return $query->orderBy('group_id', 'asc');
+            return $query->orderBy('group_id')->orderBy('order');
         });
     }
 }

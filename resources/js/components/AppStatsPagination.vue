@@ -2,7 +2,7 @@
   <div
     :class="[...classes.root, ...(position === 'top' ? classes.position.top.root : classes.position.bottom.root)]"
   >
-    <div class="flex flex-row gap-6 -mb-px">
+    <div :class="classes.row">
       <div :class="[...classes.arrow.default, ...classes.arrow.previous]">
         <ArrowNarrowLeftIcon :class="[...classes.arrow.icon]" />
         
@@ -180,6 +180,7 @@ function handlePreviousPageClick() {
 
 const classes = reactive({
   root: ['select-none', 'mx-3'],
+  row: ['flex', 'flex-row', 'gap-6', '-mb-px'],
   number: {
     default: ['py-3', 'px-5', 'font-bold'],
     active: ['text-teal-600', 'border-teal-600'],

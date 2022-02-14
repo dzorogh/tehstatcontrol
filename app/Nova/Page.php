@@ -4,7 +4,10 @@ namespace App\Nova;
 
 use Emilianotisato\NovaTinyMCE\NovaTinyMCE;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Image;
 use Laravel\Nova\Fields\Slug;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\Textarea;
@@ -68,16 +71,14 @@ class Page extends Resource
     {
         return [
 //            ID::make(__('ID'), 'id')->sortable(),
-
-
             Text::make(__('Заголовок'), 'title')->sortable()->rules('required'),
             Slug::make(__('URL'), 'slug')->from('title')->hideFromIndex()->sortable()->rules('required'),
+            Boolean::make(__('Новость?'), 'news'),
+            Image::make(__('Изображение'), 'image')->disk('public')->prunable(),
             Textarea::make(__('Короткое содержание'), 'excerpt')->rows(3),
             NovaTinyMCE::make(__('Контент'), 'content')->options([
                 'height' => '600'
             ]),
-
-            // TODO: Add Image
         ];
     }
 

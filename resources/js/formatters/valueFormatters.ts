@@ -4,7 +4,7 @@ import plural from 'plural-ru';
 
 function formatPercent(value) {
   if (!isNaN(value)) {
-    return Math.round((parseFloat(value) * 100) * 100) / 100 + '%'
+    return Math.round((parseFloat(value) * 100) * 100) / 100 + '%';
   } else {
     return value;
   }
@@ -16,17 +16,16 @@ function formatMonths(value) {
   }
   
   if (value > 12) {
-    const years = Math.floor(value / 12);
-    const months = value % 12;
+    const years = Math.round(Math.floor(value / 12));
+    const months = Math.round(value % 12);
     
     if (months > 0) {
-      return `${years} ${plural(years, 'год', 'года', 'лет')} ${months} ${plural(months, 'месяц',
-       'месяца', 'месяцев')}`
+      return `${years} ${plural(years, 'г', 'г', 'л')}. ${months} мес.`;
     } else {
-      return `${years} ${plural(years, 'год', 'года', 'лет')}`
+      return `${years} ${plural(years, 'г', 'г', 'л')}.`;
     }
   } else {
-    return `${value} ${plural(value, 'месяц', 'месяца', 'месяцев')}`;
+    return `${value} мес.`;
   }
 }
 
@@ -43,12 +42,21 @@ function formatPrice(value) {
   }).format(value);
 }
 
+function formatHP(value) {
+  if (isNaN(value)) {
+    return value;
+  }
+  
+  return `${value} л. с.`;
+}
+
 function formatDataType(dataType: DataType, value) {
   if (dataType === 'percent') return formatPercent(value);
   if (dataType === 'months') return formatMonths(value);
   if (dataType === 'price') return formatPrice(value);
+  if (dataType === 'hp') return formatHP(value);
   
   return value;
 }
 
-export { formatDataType };
+export { formatDataType, formatHP, formatMonths, formatPercent, formatPrice };

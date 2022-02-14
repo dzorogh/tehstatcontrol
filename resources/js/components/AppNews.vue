@@ -38,7 +38,7 @@
       class="flex flex-col bg-zinc-100 shadow-2xl transition-all hover:scale-105"
     >
       <span class="aspect-video block w-full">
-        <img src="https://via.placeholder.com/854x480">
+        <img :src="newsItem.image">
       </span>
 
       <span class=" flex flex-col p-5 h-full">
@@ -69,6 +69,7 @@ const props = defineProps<{
     slug: string
     excerpt: string
     id: number
+    image?: string
   }[] | null
 }>();
 </script>
