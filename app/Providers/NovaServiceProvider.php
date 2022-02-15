@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Exports\StatsExport;
+use App\Exports\StatsExportV2;
 use App\Imports\StatsImport;
 use Dzorogh\ExcelDataUpdate\ExcelDataUpdate;
 use Illuminate\Support\Facades\Gate;
@@ -58,7 +59,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     protected function cards()
     {
         return [
-            new ExcelDataUpdate(new StatsExport, new StatsImport)
+            new ExcelDataUpdate(new StatsExportV2, new StatsImport)
         ];
     }
 

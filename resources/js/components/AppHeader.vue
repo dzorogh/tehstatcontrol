@@ -36,7 +36,7 @@
 
       <router-link
         active-class="text-teal-300 cursor-default"
-        :to="{name: 'page', params: {slug: 'contacts'}}"
+        :to="{name: 'contacts'}"
         class="ml-5 hover:text-teal-300"
       >
         Контакты

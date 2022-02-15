@@ -108,8 +108,11 @@ import { Sort } from '../types/Sort';
 import { Filters } from '../types/Filters';
 import { Meta } from '../types/Meta';
 import AppStatsLoading from './AppStatsLoading.vue';
+import { useStore } from '../store';
+import { setTitle } from '../title';
 
 const route = useRoute();
+const store = useStore();
 
 interface Params {
   filters: object;
@@ -158,21 +161,25 @@ const sortedColumns = computed<Attribute[]>(() => {
 });
 
 watch(() => route.params.group, (newGroupSlug) => {
-  pageLoading.value = true;
+  if (newGroupSlug) {
+    pageLoading.value = true;
   
-  params.group_slug = newGroupSlug as string;
+    params.group_slug = newGroupSlug as string;
   
-  axios
-    .get(`/api/stats/groups/${newGroupSlug}`)
-    .then(({ data }) => {
-      group.value = data.data;
-      
-      getList()
-        .finally(() => {
-          selectedChartTabIndex.value = 0;
-          pageLoading.value = false;
-        });
-    });
+    axios
+      .get(`/api/stats/groups/${newGroupSlug}`)
+      .then(({ data }) => {
+        group.value = data.data;
+        
+        setTitle(data.data.title);
+        
+        getList()
+          .finally(() => {
+            selectedChartTabIndex.value = 0;
+            pageLoading.value = false;
+          });
+      });
+  }
 }, {
   immediate: true,
 });

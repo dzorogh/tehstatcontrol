@@ -12,6 +12,7 @@ import axios from 'axios';
 import { reactive, ref } from 'vue';
 import AppNews from './AppNews.vue';
 import AppSlides from './AppSlides.vue';
+import { setTitle } from '../title';
 
 const slides = [
   {
@@ -29,6 +30,8 @@ const news = ref(null);
 axios.get('/api/news').then((response) => {
   news.value = response.data.data;
 });
+
+setTitle('Государственный центр технических исследований', true)
 
 </script>
 

@@ -34,7 +34,8 @@ class StatsController extends Controller
         return GroupResource::collection(Group::all());
     }
 
-    #[Pure] public function group(Group $group): GroupResource
+    #[Pure]
+    public function group(Group $group): GroupResource
     {
         return new GroupResource($group);
     }

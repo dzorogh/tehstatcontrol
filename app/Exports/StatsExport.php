@@ -137,7 +137,7 @@ class StatsExport implements FromCollection, WithStyles, WithHeadings
     {
         $products = Product::with(['brand', 'category', 'values'])->get();
 
-        $result = $products->map(function (Product $item) {
+        return $products->map(function (Product $item) {
 
             $row = [
                 $item->category->title,
@@ -154,8 +154,6 @@ class StatsExport implements FromCollection, WithStyles, WithHeadings
 
             return $row;
         });
-
-        return $result;
     }
 
     public function registerEvents(): array

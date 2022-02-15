@@ -14,27 +14,27 @@
         <div class="mb-3 w-1/4 h-6 bg-slate-700 rounded" />
       </div>
     </div>
-
+    
     <div
       v-if="error"
       class="error"
     >
       {{ error }}
     </div>
-
+    
     <article
       v-if="page && !loading"
       class="p-12 bg-zinc-100 prose prose-xl"
     >
       <AppPageTitle :title="page.title" />
-
+      
       <p v-if="page.image">
         <img
           :src="page.image"
           alt=""
         >
       </p>
-
+      
       <p>
         {{ page.excerpt }}
       </p>
@@ -45,13 +45,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch }          from 'vue';
+import { ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import axios                   from 'axios';
-import AppPageTitle            from './AppPageTitle.vue';
+import axios from 'axios';
+import AppPageTitle from './AppPageTitle.vue';
+import { setTitle } from '../title';
 
 const router = useRouter();
-const route  = useRoute();
+const route = useRoute();
 
 const loading = ref(false);
 
@@ -64,7 +65,7 @@ interface Page {
   slug: string
 }
 
-const page  = ref<Page>();
+const page = ref<Page>();
 const error = ref();
 
 watch(
@@ -77,18 +78,19 @@ watch(
           if (!response || !response.data || !response.data.data) {
             throw new Error();
           }
-
           page.value = response?.data?.data;
+          
+          setTitle(page.value.title);
         })
         .catch(() => {
           router.push({
-            name:   'NotFound',
+            name: 'NotFound',
             params: {
               pathMatch: route?.path.substring(1)
-                           .split('/'),
+                .split('/'),
             },
-            query:  route?.query,
-            hash:   route?.hash,
+            query: route?.query,
+            hash: route?.hash,
           });
         })
         .finally(() => {

@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\ApiLogoutController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\StatsController;
-use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,9 +23,23 @@ use Illuminate\Support\Facades\Route;
 });*/
 
 
-Route::get('/page/{page}', [PageController::class, 'show']);
-Route::get('/news', [PageController::class, 'news']);
+Route::middleware('auth')->group(function() {
+    Route::get('/page/{page}', [PageController::class, 'show']);
+    Route::get('/news', [PageController::class, 'news']);
 
-Route::get('/stats/groups', [StatsController::class, 'groups']);
-Route::get('/stats/groups/{group}', [StatsController::class, 'group']);
-Route::post('/stats/products', [StatsController::class, 'products']);
+    Route::get('/stats/groups', [StatsController::class, 'groups']);
+    Route::get('/stats/groups/{group}', [StatsController::class, 'group']);
+    Route::post('/stats/products', [StatsController::class, 'products']);
+
+    Route::get('/logout', ApiLogoutController::class);
+});
+
+Route::get('/check-auth', function (\Illuminate\Http\Request $request) {
+    $value = $request->session()->all();
+
+    if (Auth::check()) {
+        return response('', 200);
+    } else {
+        return response('', 401);
+    }
+});
