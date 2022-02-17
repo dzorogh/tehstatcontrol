@@ -11,7 +11,7 @@
         "php": "^8.0.2",
         "ext-json": "*",
         "coderello/laravel-nova-lang": "^1.8",
-        "dzorogh/excel-data-update": "*",
+        "dzorogh/nova-card-data-update": "^1.0",
         "dzorogh/tsc": "*",
         "emilianotisato/nova-tinymce": "^1.2",
         "fruitcake/laravel-cors": "^2.0",
@@ -81,10 +81,6 @@
         {
             "type": "path",
             "url": "./nova-components/Tsc"
-        },
-        {
-            "type": "path",
-            "url": "./nova-components/ExcelDataUpdate"
         }
     ]
 }

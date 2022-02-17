@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c8b3ba8b6e93747e8da2df3e6eddcf14",
+    "content-hash": "b62189248f32bcac247378130876a006",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -949,12 +949,18 @@
             "time": "2022-01-18T15:43:28+00:00"
         },
         {
-            "name": "dzorogh/excel-data-update",
-            "version": "dev-master",
+            "name": "dzorogh/nova-card-data-update",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Dzorogh/nova-card-excel-data-update.git",
+                "reference": "d838eccf27fea8475f67f90bd20b3448754f45be"
+            },
             "dist": {
-                "type": "path",
-                "url": "./nova-components/ExcelDataUpdate",
-                "reference": "ff5b9a1844a875e88b015845903786ce6316911a"
+                "type": "zip",
+                "url": "https://api.github.com/repos/Dzorogh/nova-card-excel-data-update/zipball/d838eccf27fea8475f67f90bd20b3448754f45be",
+                "reference": "d838eccf27fea8475f67f90bd20b3448754f45be",
+                "shasum": ""
             },
             "require": {
                 "maatwebsite/excel": "^3.1",
@@ -973,17 +979,20 @@
                     "Dzorogh\\ExcelDataUpdate\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
-            "description": "A Laravel Nova card.",
+            "description": "A universal Laravel Nova card to update data with Excel file.",
             "keywords": [
                 "laravel",
                 "nova"
             ],
-            "transport-options": {
-                "relative": true
-            }
+            "support": {
+                "issues": "https://github.com/Dzorogh/nova-card-excel-data-update/issues",
+                "source": "https://github.com/Dzorogh/nova-card-excel-data-update/tree/beta"
+            },
+            "time": "2022-02-14T12:11:15+00:00"
         },
         {
             "name": "dzorogh/tsc",
