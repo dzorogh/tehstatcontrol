@@ -80,10 +80,9 @@ const props = defineProps<{
   classes?: Classes;
 }>();
 
-
 const emit = defineEmits<{
-  (e: 'update:modelValue', modelValue: typeof props['modelValue']): void;
-  (e: 'change', modelValue: typeof props['modelValue'] | null): void;
+  (e: 'update:modelValue', modelValue: any): void;
+  (e: 'change', modelValue: any | null): void;
 }>();
 
 function conditionalClasses(condition: boolean, classes: string[]): string[] {

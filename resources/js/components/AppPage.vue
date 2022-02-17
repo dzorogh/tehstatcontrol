@@ -30,7 +30,7 @@
       
       <p v-if="page.image">
         <img
-          :src="page.image"
+          :src="'/storage/' + page.image"
           alt=""
         >
       </p>
