@@ -38,7 +38,7 @@
       class="flex flex-col bg-zinc-100 shadow-2xl transition-all hover:scale-105"
     >
       <span class="aspect-video block w-full">
-        <img :src="newsItem.image">
+        <img :src="'/storage/' + newsItem.image">
       </span>
 
       <span class=" flex flex-col p-5 h-full">
