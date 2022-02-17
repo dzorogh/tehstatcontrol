@@ -5,7 +5,6 @@ import axios from "axios";
 // define your typings for the store state
 export interface State {
   metrikaId: number,
-  title: string,
   stats: {
     groups: Array<{
       slug: string;
@@ -22,7 +21,6 @@ export const key: InjectionKey<Store<State>> = Symbol("key");
 
 export const store = createStore<State>({
   state: {
-    title: '',
     metrikaId: 86667607,
     stats: {
       groups: [],

@@ -3,9 +3,9 @@
 namespace App\Providers;
 
 use App\Exports\StatsExport;
-use App\Exports\StatsExportV2;
 use App\Imports\StatsImport;
 use Dzorogh\ExcelDataUpdate\ExcelDataUpdate;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Nova\Nova;
 use Laravel\Nova\NovaApplicationServiceProvider;
@@ -45,9 +45,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     protected function gate()
     {
         Gate::define('viewNova', function ($user) {
-            return in_array($user->email, [
-                env('ADMIN_EMAIL')
-            ]);
+            return in_array($user->role, ['admin', 'editor']);
         });
     }
 
@@ -59,7 +57,7 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
     protected function cards()
     {
         return [
-            new ExcelDataUpdate(new StatsExportV2, new StatsImport)
+            new ExcelDataUpdate(new StatsExport, new StatsImport)
         ];
     }
 

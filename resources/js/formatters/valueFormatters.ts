@@ -50,13 +50,28 @@ function formatHP(value) {
   return `${value} л. с.`;
 }
 
+function formatRating(value) {
+  return Math.round(value * 100) / 100;
+}
+
+function formatNumber(value) {
+  return Math.round(value * 100) / 100;
+}
+
+function formatCountry(value) {
+  return new Intl.DisplayNames(['ru'], {type: 'region'}).of(value);
+}
+
 function formatDataType(dataType: DataType, value) {
   if (dataType === 'percent') return formatPercent(value);
   if (dataType === 'months') return formatMonths(value);
   if (dataType === 'price') return formatPrice(value);
   if (dataType === 'hp') return formatHP(value);
+  if (dataType === 'rating') return formatRating(value);
+  if (dataType === 'number') return formatNumber(value);
+  if (dataType === 'country') return formatCountry(value);
   
   return value;
 }
 
-export { formatDataType, formatHP, formatMonths, formatPercent, formatPrice };
+export { formatDataType, formatHP, formatMonths, formatPercent, formatPrice, formatNumber, formatRating, formatCountry };

@@ -5,9 +5,9 @@ namespace App\Providers;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
-use App\Policies\Stats\BrandPolicy;
-use App\Policies\Stats\CategoryPolicy;
-use App\Policies\Stats\ProductPolicy;
+use App\Policies\BrandPolicy;
+use App\Policies\CategoryPolicy;
+use App\Policies\ProductPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 

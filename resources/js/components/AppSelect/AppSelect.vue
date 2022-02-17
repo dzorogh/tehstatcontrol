@@ -63,11 +63,14 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue';
-import { directive as vClickOutside } from 'click-outside-vue3';
 import { ChevronDownIcon, CheckCircleIcon, CheckIcon } from '@heroicons/vue/solid';
+
+// @ts-ignore
+import { directive as vClickOutside } from 'click-outside-vue3';
+
 import { Classes } from './Classes';
 
-interface Props {
+const props = defineProps<{
   multiple?: boolean;
   options: any[];
   title: string;
@@ -75,14 +78,13 @@ interface Props {
   optionLabel: ((option) => string) | string;
   optionValue: string;
   classes?: Classes;
-}
+}>();
 
-interface Emits {
-  (e: 'update:modelValue', modelValue: Props['modelValue']): void;
-}
 
-const props = defineProps<Props>();
-const emit = defineEmits<Emits>();
+const emit = defineEmits<{
+  (e: 'update:modelValue', modelValue: typeof props['modelValue']): void;
+  (e: 'change', modelValue: typeof props['modelValue'] | null): void;
+}>();
 
 function conditionalClasses(condition: boolean, classes: string[]): string[] {
   return condition ? classes : [];
@@ -108,7 +110,7 @@ function getOptionLabel(option): string {
   }
   
   if (typeof props.optionLabel === 'function') {
-    return props.optionLabel(option)
+    return props.optionLabel(option);
   }
 }
 
@@ -135,6 +137,11 @@ function isOptionActive(option) {
   }
 }
 
+function emitUpdate(value?) {
+  emit('update:modelValue', value);
+  emit('change', value)
+}
+
 function toggleSelectOption(option) {
   // closeDropdown()
   let selected = props.modelValue;
@@ -144,9 +151,9 @@ function toggleSelectOption(option) {
     // if single option result
     
     if (optionValue !== selected) {
-      emit('update:modelValue', optionValue);
+      emitUpdate(optionValue)
     } else {
-      emit('update:modelValue', null);
+      emitUpdate()
     }
   } else {
     // if multiply options result
@@ -163,8 +170,8 @@ function toggleSelectOption(option) {
       // add new item
       selected.push(optionValue);
     }
-    
-    emit('update:modelValue', selected);
+  
+    emitUpdate(selected)
   }
 }
 

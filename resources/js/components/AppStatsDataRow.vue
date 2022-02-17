@@ -26,11 +26,25 @@
       :class="[...cellClass]"
     >
       <div v-if="attribute.dataType === 'comment'">
-        {{ getAttributeValue(product, attribute) }}
+        {{ getAttributeValue(product, attribute).toString() }}
+      </div>
+      
+      <div
+        v-if="attribute.dataType === 'country'"
+        class="flex gap-4 items-center"
+      >
+        <country-flag
+          class="block flex-none !my-0"
+          :country="getAttributeValue(product, attribute).toString()"
+        />
+        
+        <span>
+          {{ getCountryName(getAttributeValue(product, attribute).toString()) }}
+        </span>
       </div>
       
       <div v-else>
-        {{ getAttributeValue(product, attribute) }}
+        {{ getAttributeValue(product, attribute).format() }}
       </div>
     </td>
   </tr>
@@ -40,6 +54,7 @@
 import { Attribute } from '../types/Attribute';
 import { Product } from '../types/Product';
 import { formatDataType } from '../formatters/valueFormatters';
+import CountryFlag from 'vue-country-flag-next';
 
 defineProps<{
   product: Product;
@@ -49,13 +64,29 @@ defineProps<{
 }>();
 
 function getAttributeValue(product: Product, attribute: Attribute) {
+  let result = {
+    format: null
+  };
+  
   const value = product.valuesByAttributeId[attribute.id]?.value;
   
-  if (value) {
-    return formatDataType(attribute.dataType, value);
-  } else {
-    return null;
+  result.format = () => {
+    if (value) {
+      return formatDataType(attribute.dataType, value);
+    } else {
+      return '';
+    }
   }
+  
+  result.toString = function () {
+    return value;
+  }
+  
+  return result
+}
+
+function getCountryName(code) {
+  return new Intl.DisplayNames(['ru'], { type: 'region' }).of(code);
 }
 
 </script>

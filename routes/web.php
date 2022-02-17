@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginWithBitrixController;
+use App\Http\Controllers\LogoutController;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/bitrix-login', LoginWithBitrixController::class);
+Route::get('/logout', LogoutController::class);
 Route::get('/{page}', [HomeController::class, "show"])->where('page', '^(?!admin|nova-api|nova-vendor|api|storage|bitrix-login|logout|check-auth).*$');
 
 

@@ -14,7 +14,7 @@
         </div>
       </div>
       
-      <div v-if="list && list.data.length">
+      <div v-if="list">
         <AppStatsCharts
           v-if="list.chart"
           :selected="selectedChartTabIndex"
@@ -25,7 +25,8 @@
         <!--        <pre>{{ JSON.stringify(list.brandsStatsFormatted, null, 2) }}</pre>-->
         
         <AppStatsFilters
-          :filters="list.filters"
+          :request-filters="list.requestFilters"
+          :available-filters="list.availableFilters"
           @update:filters="updateFilters"
         />
         
@@ -48,7 +49,7 @@
                   :cell-class="cellClass"
                   :columns="sortedColumns"
                   :sort="list.sort"
-                  @change-sort="handleSort"
+                  @change-sort="updateSort"
                 />
               </thead>
               <tbody>
@@ -86,16 +87,17 @@
 // vendor
 import { useRoute } from 'vue-router';
 import { computed, reactive, ref, watch } from 'vue';
-import axios from 'axios';
-import { LineChart, BarChart, ExtractComponentData } from 'vue-chart-3';
-import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
-
-// app
-import { formatDataType, formatPercent } from '../formatters/valueFormatters';
+import axios, { AxiosError } from 'axios';
 
 // types
 import { Attribute } from '../types/Attribute';
+import { Sort } from '../types/Sort';
+import { RequestParams } from '../types/RequestParams';
+import { List } from '../types/List';
+
+// app
+import { useStore } from '../store';
+import { setTitle } from '../title';
 
 // components
 import AppPageTitle from './AppPageTitle.vue';
@@ -104,48 +106,11 @@ import AppStatsPagination from './AppStatsPagination.vue';
 import AppStatsDataRow from './AppStatsDataRow.vue';
 import AppStatsHeadingRow from './AppStatsHeadingRow.vue';
 import AppStatsCharts from './AppStatsCharts.vue';
-import { Sort } from '../types/Sort';
-import { Filters } from '../types/Filters';
-import { Meta } from '../types/Meta';
 import AppStatsLoading from './AppStatsLoading.vue';
-import { useStore } from '../store';
-import { setTitle } from '../title';
 
+// use composables
 const route = useRoute();
 const store = useStore();
-
-interface Params {
-  filters: object;
-  group_slug: string;
-  page: number;
-  sort: Sort
-}
-
-interface List {
-  data: Array<any>;
-  dynamicColumns: Array<any>;
-  filters: Filters;
-  requestParams: Params;
-  meta: Meta;
-  chart: {
-    attribute: Attribute
-    brands: string[]
-    values: number[]
-  }[];
-  sort: Sort
-}
-
-const list = ref<List>();
-
-const params = reactive<Params>({
-  filters: {},
-  group_slug: route.params.group as string,
-  page: 1,
-  sort: {
-    type: 'title',
-    direction: 'asc'
-  }
-});
 
 const pageLoading = ref(false);
 const listLoading = ref(false);
@@ -160,43 +125,30 @@ const sortedColumns = computed<Attribute[]>(() => {
   return [...list.value.dynamicColumns];
 });
 
-watch(() => route.params.group, (newGroupSlug) => {
-  if (newGroupSlug) {
-    pageLoading.value = true;
-  
-    params.group_slug = newGroupSlug as string;
-  
-    axios
-      .get(`/api/stats/groups/${newGroupSlug}`)
-      .then(({ data }) => {
-        group.value = data.data;
-        
-        setTitle(data.data.title);
-        
-        getList()
-          .finally(() => {
-            selectedChartTabIndex.value = 0;
-            pageLoading.value = false;
-          });
-      });
-  }
-}, {
-  immediate: true,
+const requestParams = reactive<RequestParams>({
+  filters: {
+    groupSlug: route.params.group as string,
+  },
+  page: 1,
+  sort: {
+    type: 'title',
+    direction: 'asc',
+  },
 });
 
-function getList() {
+const list = ref<List>();
+
+async function getList() {
   listLoading.value = true;
   
-  return axios
-    .post('/api/stats/products', {
-      page: params.page,
-      group_slug: params.group_slug,
-      ...params.filters,
-      sort: params.sort
-    })
+  return axios.post('/api/stats/products', requestParams)
     .then(({ data }) => {
       list.value = data;
-      params.page = list.value.meta.current_page;
+      requestParams.page = list.value.meta.current_page;
+      requestParams.filters = list.value.requestFilters;
+    })
+    .catch((error: AxiosError) => {
+      alert(JSON.stringify(error.response.data, null, 2));
     })
     .finally(() => {
       listLoading.value = false;
@@ -204,31 +156,55 @@ function getList() {
 }
 
 function updateFilters(filters) {
-  params.filters = filters;
-  params.page = 1;
+  requestParams.filters = filters;
+  requestParams.page = 1;
   
   getList();
 }
 
 function updatePage(page) {
-  params.page = page;
+  requestParams.page = page;
   
   getList();
 }
+
+function updateSort(sort: Sort) {
+  requestParams.sort = sort;
+  requestParams.page = 1;
+  
+  console.log('handleSort', sort);
+  
+  getList();
+}
+
+watch(() => route.params.group, async (newGroupSlug) => {
+  if (newGroupSlug) {
+    pageLoading.value = true;
+    
+    try {
+      const response = await axios.get(`/api/stats/groups/${newGroupSlug}`);
+      group.value = response.data.data;
+      setTitle(response.data.data.title);
+      
+      requestParams.filters.groupSlug = newGroupSlug as string;
+      await getList();
+      
+    } catch (error) {
+      console.log(error);
+    }
+    
+    selectedChartTabIndex.value = 0;
+    pageLoading.value = false;
+  }
+}, {
+  immediate: true,
+});
+
+const selectedChartTabIndex = ref(0);
 
 const cellClass = [
   'py-4', 'px-6',
 ];
-
-const selectedChartTabIndex = ref(0);
-
-function handleSort(sort: Sort) {
-  params.sort = sort;
-  
-  console.log('handleSort', sort)
-  
-  getList();
-}
 
 </script>
 

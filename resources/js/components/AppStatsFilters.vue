@@ -3,33 +3,36 @@
     <div class="flex flex-row gap-4 mb-4">
       <div class="w-64">
         <AppSelect
-          v-model="selectedFilters.year"
-          :options="filters.years"
+          v-model="selectedFilters.yearId"
+          :options="availableFilters.years"
           title="Год"
           option-label="value"
           option-value="id"
-          :classes="selectClasses"
+          :classes="defaultClasses"
+          @change="applyFilters"
         />
       </div>
       <div class="w-64">
         <AppSelect
-          v-model="selectedFilters.category"
-          :options="filters.categories"
+          v-model="selectedFilters.categoryId"
+          :options="availableFilters.categories"
           title="Тип техники"
           option-label="title"
           option-value="id"
-          :classes="selectClasses"
+          :classes="defaultClasses"
+          @change="applyFilters"
         />
       </div>
       <div class="w-64">
         <AppSelect
-          v-model="selectedFilters.brands"
-          :options="filters.brands"
+          v-model="selectedFilters.brandsIds"
+          :options="availableFilters.brands"
           :multiple="true"
           title="Бренды"
           option-label="title"
           option-value="id"
-          :classes="selectClasses"
+          :classes="defaultClasses"
+          @change="applyFilters"
         />
       </div>
     </div>
@@ -49,9 +52,9 @@
           :option-label="getAttributeOptionLabel.bind(null, attribute)"
           option-value="value"
           :multiple="true"
-          :classes="selectClasses"
+          :classes="defaultClasses"
           
-          @update:model-value="setAttributeFilter($event, attribute.id)"
+          @update:model-value="setAttributeFilter(attribute.id, $event)"
         />
       </div>
     </div>
@@ -73,88 +76,96 @@
 <script setup lang="ts">
 import { TrashIcon } from '@heroicons/vue/solid';
 import { computed, reactive, ref, watch } from 'vue';
+import { useDebounceFn } from '@vueuse/core';
+
 import { AppSelect, defaultClasses, Classes } from './AppSelect';
 import { Attribute } from '../types/Attribute';
-import { Filters } from '../types/Filters';
+import { AvailableFilters } from '../types/AvailableFilters';
 import { Value } from '../types/Value';
 import { formatDataType } from '../formatters/valueFormatters';
+import { RequestFilters } from '../types/RequestFilters';
 
-interface Props {
-  filters: Filters;
-}
+const props = defineProps<{
+  requestFilters: RequestFilters;
+  availableFilters: AvailableFilters;
+}>();
 
-interface Emits {
-  (e: 'update:filters', filters: Filters): void;
-}
-
-const props = defineProps<Props>();
-const emit = defineEmits<Emits>();
-
-const selectClasses: Classes = defaultClasses;
+const emit = defineEmits<{
+  (e: 'update:filters', filters: RequestFilters): void;
+}>();
 
 const sortedFilterAttributes = computed(() => {
-  return [...props.filters.attributes].sort((a, b) => {
+  return [...props.availableFilters.attributes].sort((a, b) => {
     return a.groupId - b.groupId || a.order - b.order || a.title.localeCompare(b.title);
   });
 });
 
-const emptyFilters = {
-  brands: [],
-  year: null,
+const emptyFilters: RequestFilters = {
+  brandsIds: [],
   attributes: [],
-  category: null,
+  categoryId: null,
 };
 
-const selectedFilters = reactive(emptyFilters);
+const selectedFilters = reactive<RequestFilters>(props.requestFilters);
 
-function resetFilters() {
-  console.log('Reset filters');
-  
-  selectedFilters.attributes = [];
-  selectedFilters.year = null;
-  selectedFilters.brands = null;
-  selectedFilters.category = null;
-}
-
-function getAttributeFilter(attributeId) {
-  let result = [];
-  
-  selectedFilters.attributes.forEach(item => {
-    if (item.id && item.id === attributeId) {
-      result = item.value;
-    }
-  });
-  
-  return result;
-}
-
-function setAttributeFilter(values, attributeId) {
-  let exists = false;
-  
-  console.log(values, attributeId);
-  
-  selectedFilters.attributes.forEach(item => {
-    if (item.id === attributeId) {
-      item.value = values;
-      exists = true;
-    }
-  });
-  
-  if (!exists) {
-    selectedFilters.attributes.push({
-      id: attributeId,
-      value: values,
-    });
-  }
-}
-
-watch(selectedFilters, filters => {
-  applyFilters(filters);
+watch(() => {
+  return props.requestFilters;
+}, filters => {
+  console.log('watch: props.requestFilters', filters)
+  assignFilters(filters);
 });
 
-function applyFilters(filters) {
-  emit('update:filters', filters);
+function getAttributeFilter(attributeId) {
+  if (selectedFilters.attributes) {
+    return selectedFilters.attributes[attributeId];
+  }
+  return null;
 }
+
+function setAttributeFilter(attributeId, values) {
+  console.log('setAttributeFilter', {
+    attributeId,
+    values,
+  });
+  
+  if (!selectedFilters.attributes) {
+    selectedFilters.attributes = {};
+  }
+  
+  if (values.length > 0) {
+    selectedFilters.attributes[attributeId] = values;
+  } else {
+    delete selectedFilters.attributes[attributeId];
+  }
+  
+  applyFilters();
+}
+
+function assignFilters(newFilters: RequestFilters) {
+  Object.assign(selectedFilters, {
+    ...newFilters,
+    brandsIds: [...(newFilters.brandsIds || [])],
+    attributes: { ...(newFilters.attributes || []) },
+  });
+}
+
+function resetFilters() {
+  console.log('resetFilters', {
+    selectedFilters,
+    emptyFilters,
+  });
+  
+  assignFilters(emptyFilters);
+  applyFilters();
+}
+
+const applyFilters = useDebounceFn(() => {
+  console.log('applyFilters', {
+    selectedFilters,
+  });
+  
+  emit('update:filters', selectedFilters);
+}, 1000)
 
 function getAttributeOptionLabel(attribute: Attribute, option: Value) {
   return formatDataType(attribute.dataType, option.value);

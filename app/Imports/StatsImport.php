@@ -42,7 +42,7 @@ class StatsImport implements WithEvents, OnEachRow, WithHeadingRow, WithChunkRea
 
 //        Log::info('Reading row', ['row' => $row, 'rowIndex' => $rowIndex]);
 
-        if ($rowIndex > 2) {
+        if ($rowIndex > 3) {
             $productTitle = '';
             $brandTitle = '';
             $categoryTitle = '';
@@ -148,7 +148,7 @@ class StatsImport implements WithEvents, OnEachRow, WithHeadingRow, WithChunkRea
 
     public function chunkSize(): int
     {
-        return 20;
+        return 10;
     }
 
     public function headingRow(): int

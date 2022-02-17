@@ -31,10 +31,7 @@ class LoginWithBitrixController extends Controller
         ]);
 
         if ($request->input('hash') == sha1($request->input('email') . env('BITRIX_AUTH_SALT'))) {
-            // TODO: authenticate as user
-            // Save email in metrika counter
-
-            $user = User::whereEmail(env('TEST_USER_EMAIL'))->first();
+            $user = User::whereEmail(env('USER_EMAIL'))->first();
 
             Auth::login($user);
             $request->session()->regenerate();

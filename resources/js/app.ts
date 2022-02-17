@@ -1,9 +1,11 @@
-import { createApp, getCurrentInstance } from 'vue';
+import { createApp } from 'vue';
 import App from './components/App.vue';
 import router from './router';
 import { store, key } from './store';
 import { AxiosError, default as axios } from 'axios';
-import { setSuffix } from './title';
+import { setSuffix, setTitle } from './title';
+
+setSuffix(' - ГЦТИ');
 
 const app = createApp(App);
 
@@ -31,23 +33,22 @@ router.afterEach((to) => {
     if (email) {
       console.log('[metrika: userParams]', store.state.metrikaId, {
         email: email,
-        UserId: email
+        // UserID: email
       });
       
       window.ym(store.state.metrikaId, 'userParams', {
         email: email,
-        UserId: email
+        // UserID: email
       });
     }
     
     console.log('[metrika: hit]', store.state.metrikaId, to.path);
     window.ym(store.state.metrikaId, 'hit', to.path);
   }
-  
-  document.title = store.state.title;
 });
 
 router.beforeEach(async (to, from) => {
+  
   if (to.name === 'login') {
     return true;
   }
@@ -67,5 +68,3 @@ router.beforeEach(async (to, from) => {
     return false;
   }
 });
-
-setSuffix(' - ГЦТИ');

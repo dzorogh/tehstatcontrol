@@ -38,7 +38,7 @@
             webvisor:            true,
             userParams:          {
               email: '{{ request()->input('email', '') }}',
-              UserID: '{{ request()->input('email', '') }}',
+              {{--UserID: '{{ request()->input('email', '') }}',--}}
             },
           });
         </script>

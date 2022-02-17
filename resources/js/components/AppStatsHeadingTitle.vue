@@ -6,11 +6,11 @@
     <div class="">
       <ChevronUpIcon
         class="-mb-1 w-4 h-4 group-hover:scale-150"
-        :class="{'fill-teal-300': sorted === 'asc'}"
+        :class="{'fill-teal-300': sorted === 'desc'}"
       />
       <ChevronDownIcon
         class="-mt-1 w-4 h-4 group-hover:scale-150"
-        :class="{'fill-teal-300': sorted === 'desc'}"
+        :class="{'fill-teal-300': sorted === 'asc'}"
       />
     </div>
     

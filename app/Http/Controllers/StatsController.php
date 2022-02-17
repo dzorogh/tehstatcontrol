@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductsRequest;
 use App\Http\Resources\Stats\AttributeResource;
 use App\Http\Resources\Stats\GroupResource;
 use App\Http\Resources\Stats\BrandResource;
@@ -16,7 +17,7 @@ use App\Models\Category;
 use App\Models\Year;
 use App\Stats\Brands;
 use App\Stats\Categories;
-use App\Stats\RequestParams;
+use App\Stats\RequestFilters;
 use App\Stats\Sort;
 use App\Stats\StatsByBrand;
 use App\Stats\Years;
@@ -40,54 +41,30 @@ class StatsController extends Controller
         return new GroupResource($group);
     }
 
-    public function products(Request $request): AnonymousResourceCollection
+    public function products(ProductsRequest $request): AnonymousResourceCollection
     {
-        // ->where(function (Builder $query) use ($request) {
-        //                $query->where('group_id', $request->input('group_id'));
-        //                $query->orWhereNull('group_id');
-        //            })
+        $validated = $request->validated();
 
-        // Creating filters (request params)
+        $requestFilters = new RequestFilters();
+        $requestFilters->setBrands($request->validated('filters.brandsIds'));
+        $requestFilters->setCategory($request->validated('filters.categoryId'));
+        $requestFilters->setAttributes($request->validated('filters.attributes'));
+        $requestFilters->setYear($request->validated('filters.yearId', Year::query()->orderByDesc('value')->first()->id));
 
-        if ($request->input('group_slug')) {
-            $groupId = Group::whereSlug($request->input('group_slug'))->first()->id;
-        } elseif ($request->input('group_id')) {
-            $groupId = $request->input('group_id');
+        if ($request->input('filters.groupSlug')) {
+            $groupId = Group::whereSlug($request->validated('filters.groupSlug'))->first()->id;
+        } elseif ($request->validated('filters.groupId')) {
+            $groupId = $request->validated('filters.groupId');
         } else {
-            $groupId = Group::query()->first();
+            $groupId = Group::query()->first()->id;
         }
 
-        $attributes = [];
-
-        if ($request->input('attributes')) {
-            foreach ($request->input('attributes') as $index => $attributeParams) {
-                if ($request->input("attributes.${index}.id") && $request->input("attributes.${index}.value")) {
-                    $attributes[$request->input("attributes.${index}.id")] = $request->input("attributes.${index}.value");
-                }
-            }
-        }
-
-        $requestParams = new RequestParams();
-
-        $requestParams->setBrands($request->input('brands'));
-        $requestParams->setCategory($request->input('category'));
-        $requestParams->setYear($request->input('year') ?? Year::query()->orderByDesc('value')->first()->id);
-        $requestParams->setAttributes($attributes);
-        $requestParams->setGroup($groupId);
-
-        /*$requestParams = [
-            // Brands is array, we can sort by multiply brands
-            'brands' => $request->input('brands'),
-            'category_id' => $request->input('category'),
-            'year_id' => $request->input('year') ?? Year::query()->orderByDesc('value')->first()->id,
-            'attributes' => $attributes,
-            'group_id' => $groupId,
-        ];*/
+        $requestFilters->setGroup($groupId);
 
         $sort = [
-            'type' => $request->input('sort.type', 'title'),
-            'direction' => $request->input('sort.direction', 'asc'),
-            'attributeId' => $request->input('sort.attributeId', null),
+            'type' => $request->validated('sort.type', 'title'),
+            'direction' => $request->validated('sort.direction', 'asc'),
+            'attributeId' => $request->validated('sort.attributeId', null),
         ];
 
         // Base products list
@@ -101,10 +78,10 @@ class StatsController extends Controller
         ]);
 
         // Filter products by all request params
-        $productsQuery->byBrands($requestParams->brands);
-        $productsQuery->byCategory($requestParams->categoryId);
-        $productsQuery->byYear($requestParams->yearId);
-        $productsQuery->byAttributes($requestParams->attributes);
+        $productsQuery->byBrands($requestFilters->brands);
+        $productsQuery->byCategory($requestFilters->categoryId);
+        $productsQuery->byYear($requestFilters->yearId);
+        $productsQuery->byAttributes($requestFilters->attributes);
 
 
         // Next - available params for each filter,
@@ -114,34 +91,34 @@ class StatsController extends Controller
 
         // Get brands and filter by products
 
-        $brands = new Brands($requestParams->categoryId, $requestParams->yearId, $requestParams->attributes);
+        $brands = new Brands($requestFilters->categoryId, $requestFilters->yearId, $requestFilters->attributes);
         $brands = $brands->get();
 
         // Get categories (product types) and filter by filtered products
 
-        $categories = new Categories($requestParams->brands, $requestParams->yearId, $requestParams->attributes);
+        $categories = new Categories($requestFilters->brands, $requestFilters->yearId, $requestFilters->attributes);
         $categories = $categories->get();
 
         // Get years, filter by products filtered by other params
         // Maybe we not need to filter at all, but within its better
 
-        $years = new Years($requestParams->categoryId, $requestParams->brands, $requestParams->attributes);
+        $years = new Years($requestFilters->categoryId, $requestFilters->brands, $requestFilters->attributes);
         $years = $years->get();
 
         // Get available attributes (not just values), we can filter it by all another params
 
         $attributes = Attribute::query()
-            ->whereHas('values', function (Builder $query) use ($requestParams) {
-                $query->whereHas('product', function (Builder $query) use ($requestParams) {
+            ->whereHas('values', function (Builder $query) use ($requestFilters) {
+                $query->whereHas('product', function (Builder $query) use ($requestFilters) {
                     /** @var Product $query */
-                    $query->byBrands($requestParams->brands);
-                    $query->byCategory($requestParams->categoryId);
-                    $query->byYear($requestParams->yearId);
-                    $query->byAttributes($requestParams->attributes);
+                    $query->byBrands($requestFilters->brands);
+                    $query->byCategory($requestFilters->categoryId);
+                    $query->byYear($requestFilters->yearId);
+                    $query->byAttributes($requestFilters->attributes);
                 });
             })
-            ->where(function ($query) use ($requestParams) {
-                $query->where('group_id', $requestParams->groupId);
+            ->where(function ($query) use ($requestFilters) {
+                $query->where('group_id', $requestFilters->groupId);
                 $query->orWhereNull('group_id');
             })
             ->orderBy('order')
@@ -151,34 +128,34 @@ class StatsController extends Controller
 
         $attributesValuesQuery = AttributeValue::query()
             ->select('value', 'attribute_id')
-            ->whereHas('product', function (Builder $query) use ($requestParams) {
+            ->whereHas('product', function (Builder $query) use ($requestFilters) {
                 /** @var Product $query */
-                $query->byBrands($requestParams->brands);
-                $query->byCategory($requestParams->categoryId);
+                $query->byBrands($requestFilters->brands);
+                $query->byCategory($requestFilters->categoryId);
             })
-            ->where(function ($query) use ($requestParams) {
+            ->where(function ($query) use ($requestFilters) {
                 /** @var Product $query */
-                $query->byYear($requestParams->yearId);
+                $query->byYear($requestFilters->yearId);
             })
             ->whereHas('attribute', function (Builder $query) {
                 $query->where('data_type', '!=', 'comment');
             });
 
-        if ($requestParams->attributes) {
+        if ($requestFilters->attributes) {
             // When having attributes, we need to filter available attributes values only by other attribute values
 
-            $attributesValuesQuery->where(function ($query) use ($attributes, $requestParams) {
+            $attributesValuesQuery->where(function ($query) use ($attributes, $requestFilters) {
                 // To make it we need get all available attributes before and for each of them get values
 
                 foreach ($attributes as $attribute) {
-                    $query->orWhere(function ($query) use ($attribute, $requestParams) {
+                    $query->orWhere(function ($query) use ($attribute, $requestFilters) {
                         $query->where('attribute_id', $attribute->id); // Maybe not necessary?
 
-                        $query->whereHas('product', function ($query) use ($requestParams, $attribute) {
+                        $query->whereHas('product', function ($query) use ($requestFilters, $attribute) {
 
                             // All attributes except current
                             /** @var Product $query */
-                            $query->byAttributes(Arr::except($requestParams->attributes, $attribute->id));
+                            $query->byAttributes(Arr::except($requestFilters->attributes, $attribute->id));
                         });
                     });
                 }
@@ -201,40 +178,41 @@ class StatsController extends Controller
         // List of visible columns
         $dynamicColumns = collect();
 
-        if ($requestParams->categoryId) {
+        if ($requestFilters->categoryId) {
             /** @var Category $category */
-            $category = Category::query()->find($requestParams->categoryId);
+            $category = Category::query()->find($requestFilters->categoryId);
 
             if ($category) {
                 $dynamicColumns = $dynamicColumns->merge($attributes->where('id', $category->main_attribute_id));
             }
         }
 
-        if ($requestParams->groupId) {
+        if ($requestFilters->groupId) {
             $dynamicColumns = $dynamicColumns
                 ->merge(
                     AttributeResource::collection(
-                        $attributes->where('group_id', $requestParams->groupId)
+                        $attributes->where('group_id', $requestFilters->groupId)
                     )
                 );
         }
 
         // Stats by brand
-        $chart = new StatsByBrand($productsQuery, $requestParams->groupId, $requestParams->yearId);
+        $chart = new StatsByBrand($productsQuery, $requestFilters->groupId, $requestFilters->yearId);
         $chart = $chart->get();
 
         $sorting = new Sort($productsQuery);
         $sorting->apply($sort['type'], $sort['direction'], $sort['attributeId']);
 
         return ProductResource::collection($productsQuery->paginate())->additional([
-            'filters' => [
+            'availableFilters' => [
                 'brands' => BrandResource::collection($brands),
                 'categories' => CategoryResource::collection($categories),
                 'years' => YearResource::collection($years),
                 'attributes' => AttributeResource::collection($attributes->where('data_type', '!=', 'comment')),
             ],
-            'request' => $requestParams->all(),
-            'dynamicColumns' => $dynamicColumns->sortBy([['groupBy', 'desc'], 'order']),
+            // TODO: Remove not-actual filters from request filters???
+            'requestFilters' => $requestFilters->all(),
+            'dynamicColumns' => $dynamicColumns,
             'chart' => $chart,
             'sort' => $sort
         ]);

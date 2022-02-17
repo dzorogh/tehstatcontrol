@@ -40,12 +40,15 @@
         "@heroicons/vue": "^1.0.5",
         "@tailwindcss/forms": "^0.4.0",
         "@vueform/multiselect": "^2.3.2",
+        "@vueuse/core": "^7.6.2",
         "axios": "^0.21",
         "chartjs-plugin-datalabels": "^2.0.0",
         "click-outside-vue3": "^4.0.1",
+        "notiwind": "^1.2.5",
         "plural-ru": "^2.0.2",
         "vue": "^3.2.29",
         "vue-chart-3": "^3.0.9",
+        "vue-country-flag-next": "^2.3.2",
         "vue-router": "^4.0.12",
         "vuex": "^4.0.2"
     }
