@@ -109,14 +109,16 @@ class StatsController extends Controller
 
         $attributes = Attribute::query()
             ->whereHas('values', function (Builder $query) use ($requestFilters) {
-                $query->where('attributable_type', 'product');
-                $query->whereHas('attributable', function (Builder $query) use ($requestFilters) {
-                    /** @var Product $query */
-                    $query->byBrands($requestFilters->brands);
-                    $query->byCategory($requestFilters->categoryId);
-                    $query->byYear($requestFilters->yearId);
-                    $query->byAttributes($requestFilters->attributes);
-                });
+                $query->whereHasMorph(
+                    'attributable',
+                    Product::class,
+                    function (Builder $query) use ($requestFilters) {
+                        /** @var Product $query */
+                        $query->byBrands($requestFilters->brands);
+                        $query->byCategory($requestFilters->categoryId);
+                        $query->byYear($requestFilters->yearId);
+                        $query->byAttributes($requestFilters->attributes);
+                    });
             })
             ->where(function ($query) use ($requestFilters) {
                 $query->where('group_id', $requestFilters->groupId);
@@ -129,11 +131,14 @@ class StatsController extends Controller
 
         $attributesValuesQuery = AttributeValue::query()
             ->select('value', 'attribute_id')
-            ->whereHas('attributable', function (Builder $query) use ($requestFilters) {
-                /** @var Product $query */
-                $query->byBrands($requestFilters->brands);
-                $query->byCategory($requestFilters->categoryId);
-            })
+            ->whereHasMorph(
+                'attributable',
+                Product::class,
+                function (Builder $query) use ($requestFilters) {
+                    /** @var Product $query */
+                    $query->byBrands($requestFilters->brands);
+                    $query->byCategory($requestFilters->categoryId);
+                })
             ->where(function ($query) use ($requestFilters) {
                 /** @var Product $query */
                 $query->byYear($requestFilters->yearId);
@@ -149,16 +154,17 @@ class StatsController extends Controller
                 // To make it we need get all available attributes before and for each of them get values
 
                 foreach ($attributes as $attribute) {
-                    $query->orWhere(function ($query) use ($attribute, $requestFilters) {
+                    $query->orWhere(function (Builder $query) use ($attribute, $requestFilters) {
                         $query->where('attribute_id', $attribute->id); // Maybe not necessary?
 
-                        $query->where('attributable_type', 'product');
-                        $query->whereHas('attributable', function ($query) use ($requestFilters, $attribute) {
-
-                            // All attributes except current
-                            /** @var Product $query */
-                            $query->byAttributes(Arr::except($requestFilters->attributes, $attribute->id));
-                        });
+                        $query->whereHasMorph(
+                            'attributable',
+                            Product::class,
+                            function ($query) use ($requestFilters, $attribute) {
+                                // All attributes except current
+                                /** @var Product $query */
+                                $query->byAttributes(Arr::except($requestFilters->attributes, $attribute->id));
+                            });
                     });
                 }
             });

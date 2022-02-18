@@ -41,7 +41,7 @@ class BrandPolicy
      */
     public function create(User $user)
     {
-        //
+        return true;
     }
 
     /**
@@ -53,7 +53,7 @@ class BrandPolicy
      */
     public function update(User $user, Brand $brand)
     {
-        //
+        return true;
     }
 
     /**
@@ -77,7 +77,7 @@ class BrandPolicy
      */
     public function restore(User $user, Brand $brand)
     {
-        //
+        return true;
     }
 
     /**
@@ -89,6 +89,6 @@ class BrandPolicy
      */
     public function forceDelete(User $user, Brand $brand)
     {
-        //
+        return true;
     }
 }

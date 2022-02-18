@@ -23,8 +23,7 @@ class Years
     public function get() {
         return Year::query()
             ->whereHas('values', function (Builder $query) {
-                $query->where('attributable_type', 'product');
-                $query->whereHas('attributable', function (Builder $query) {
+                $query->whereHasMorph('attributable', Product::class, function (Builder $query) {
                     /** @var Product $query */
                     $query->byBrands($this->brands);
                     $query->byCategory($this->categoryId);

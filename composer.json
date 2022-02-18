@@ -16,6 +16,7 @@
         "emilianotisato/nova-tinymce": "^1.2",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.4.1",
+        "izi-dev/nova-conditional-field": "^2.1",
         "laravel/framework": "^9.0",
         "laravel/nova": "^3.3",
         "laravel/sanctum": "^2.14",

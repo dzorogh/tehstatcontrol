@@ -2,11 +2,17 @@
 
 namespace App\Nova;
 
+use App\Enums\AttributeDataType;
+use App\Nova\Filters\ByAttribute;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\MorphTo;
+use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\Select;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Textarea;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class AttributeValue extends Resource
@@ -45,7 +51,8 @@ class AttributeValue extends Resource
      *
      * @var string
      */
-    public function title() {
+    public function title()
+    {
         $result = $this->attribute->title;
 
         if ($this->year) {
@@ -93,13 +100,37 @@ class AttributeValue extends Resource
                 Brand::class
             ])->sortable()->searchable(),
 
-            BelongsTo::make(__('Аттрибут'), 'attribute', Attribute::class)->sortable(),
+            Select::make(__('Аттрибут'), 'attribute_id')->options(function () {
+                return array_filter(\App\Models\Attribute::query()
+                    ->orderBy('group_id', 'desc')
+                    ->orderBy('order', 'asc')
+                    ->get()
+                    ->map(function (\App\Models\Attribute $attribute) {
+                        $attribute->title = $attribute->title . " [" . __('data-type.description.' . $attribute->data_type) . "]";
+                        return $attribute;
+                    })
+                    ->pluck('title', 'id')
+                    ->toArray());
+            }),
 
-            BelongsTo::make(__('Год'), 'year', Year::class)->sortable(),
+            BelongsTo::make(__('Год'), 'year', Year::class)
+                ->nullable()
+                ->sortable()
+                ->required()
+                ->rules([
+                    Rule::requiredIf($this->attribute && $this->attribute->by_year)
+                ])
+                ->if(['attribute_id'], function ($attributeId) {
+                    if ($attributeId) {
+                        $attribute = \App\Models\Attribute::whereId($attributeId)->first();
 
-            Text::make(__('Значение'), 'value')->sortable(),
+                        if ($attribute) {
+                            return $attribute->by_year;
+                        }
+                    }
+                }),
 
-        ];
+            Textarea::make(__('Значение'), 'value')->sortable()->help('test')];
     }
 
     /**
@@ -121,7 +152,9 @@ class AttributeValue extends Resource
      */
     public function filters(Request $request)
     {
-        return [];
+        return [
+            new Filters\ByAttribute
+        ];
     }
 
     /**
