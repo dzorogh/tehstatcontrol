@@ -10,6 +10,7 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 class Brand extends Resource
 {
     public static $group = 'Статистика';
+    public static int $order = 5;
 
     /**
      * Get the displayable label of the resource.
@@ -64,6 +65,7 @@ class Brand extends Resource
     public function fields(Request $request)
     {
         return [
+            ID::make(__('ID'), 'id')->sortable(),
             Text::make(__('Название'), 'title')->sortable(),
         ];
     }

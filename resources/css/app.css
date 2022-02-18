@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+    .columns-fill-auto {
+        column-fill: auto
+    }
+
+    .prose p:first-child {
+        margin-top: 0;
+    }
+}

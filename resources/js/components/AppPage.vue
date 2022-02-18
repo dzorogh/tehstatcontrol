@@ -1,7 +1,8 @@
 <template>
-  <div>
+  <div class="h-full">
     <div
       v-if="loading"
+      class="h-full"
     >
       <div class="animate-pulse prose prose-xl">
         <div class="mb-2 h-12 bg-slate-700 rounded" />
@@ -24,22 +25,30 @@
     
     <article
       v-if="page && !loading"
-      class="p-12 bg-zinc-100 prose prose-xl"
+      class="grid grid-cols-4 gap-12 p-12 h-full bg-zinc-100"
     >
-      <AppPageTitle :title="page.title" />
-      
-      <p v-if="page.image">
-        <img
-          :src="'/storage/' + page.image"
-          alt=""
-        >
-      </p>
-      
-      <p>
-        {{ page.excerpt }}
-      </p>
-      
-      <div v-html="page.content" />
+      <div>
+        <AppPageTitle
+          :title="page.title"
+          class="mb-12"
+        />
+        
+        <div v-if="page.image">
+          <img
+            :src="'/storage/' + page.image"
+            alt=""
+          >
+        </div>
+      </div>
+      <div class="col-span-3 h-full">
+        <div class="columns-3 gap-12 max-w-full h-full prose columns-fill-auto">
+          <p v-if="page.excerpt">
+            {{ page.excerpt }}
+          </p>
+  
+          <div v-html="page.content" />
+        </div>
+      </div>
     </article>
   </div>
 </template>
@@ -106,5 +115,7 @@ watch(
 </script>
 
 <style scoped>
-
+.prose p:first-child {
+  margin-top: 0;
+}
 </style>

@@ -88,10 +88,6 @@ class Stats extends Migration
 
             $table->text('value');
 
-            $table->foreignId('product_id')
-                ->constrained('stats_products')
-                ->onDelete('cascade');
-
             $table->foreignId('attribute_id')
                 ->constrained('stats_attributes')
                 ->onDelete('cascade');
@@ -101,7 +97,7 @@ class Stats extends Migration
                 ->constrained('stats_years')
                 ->onDelete('cascade');
 
-            $table->unique(['product_id', 'attribute_id', 'year_id']);
+            $table->morphs('attributable');
         });
     }
 

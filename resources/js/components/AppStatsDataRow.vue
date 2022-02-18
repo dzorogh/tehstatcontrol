@@ -26,7 +26,7 @@
       :class="[...cellClass]"
     >
       <div v-if="attribute.dataType === 'comment'">
-        {{ getAttributeValue(product, attribute).toString() }}
+        {{ getAttributeValue(product, attribute) }}
       </div>
       
       <div

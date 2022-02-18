@@ -88,7 +88,8 @@ class Sort
         $this->query->orderBy(
         // 1
             AttributeValue::select(DB::raw('value * 1'))
-                ->whereColumn('stats_products.id', 'product_id')
+                ->where('attributable_type', 'product')
+                ->whereColumn('stats_products.id', 'attributable_id')
                 ->where('attribute_id', $attributeId)
                 ->limit(1),
             $direction
@@ -97,7 +98,8 @@ class Sort
         $this->query->orderBy(
         // 2
             AttributeValue::select('value')
-                ->whereColumn('stats_products.id', 'product_id')
+                ->where('attributable_type', 'product')
+                ->whereColumn('stats_products.id', 'attributable_id')
                 ->where('attribute_id', $attributeId)
                 ->limit(1),
             $direction

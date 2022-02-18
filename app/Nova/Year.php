@@ -10,6 +10,7 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 class Year extends Resource
 {
     public static $group = 'Статистика';
+    public static int $order = 1;
 
     /**
      * Get the displayable label of the resource.
@@ -43,7 +44,7 @@ class Year extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'value';
 
     /**
      * The columns that should be searched.
@@ -51,7 +52,7 @@ class Year extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'id', 'value'
     ];
 
     /**

@@ -29,4 +29,9 @@ class Attribute extends Model
     {
         return $this->hasMany(AttributeValue::class, 'attribute_id');
     }
+
+    public function category(): HasMany
+    {
+        return $this->hasMany(Category::class, 'main_attribute_id');
+    }
 }

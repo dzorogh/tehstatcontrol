@@ -104,11 +104,12 @@ class StatsExport implements FromQuery, ShouldAutoSize, WithMapping, WithHeading
         $sheet->getStyle("A1:{$lastColumn}1000")
             ->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
 
-        $sheet->getColumnDimension('A')->setWidth(20);
+        $sheet->getColumnDimension('A')->setWidth(5);
         $sheet->getColumnDimension('B')->setWidth(10);
         $sheet->getColumnDimension('C')->setWidth(50);
+        $sheet->getColumnDimension('D')->setWidth(50);
 
-        foreach ($sheet->getColumnIterator('D') as $key => $column) {
+        foreach ($sheet->getColumnIterator('E') as $key => $column) {
             $sheet->getColumnDimension($key)->setWidth(20);
         }
 
@@ -119,16 +120,19 @@ class StatsExport implements FromQuery, ShouldAutoSize, WithMapping, WithHeading
     {
         $headings = [
             [
+                'product.id',
                 'category.title',
                 'brand.title',
                 'product.title',
             ],
             [
+                'ID товара',
                 'Тип техники',
                 'Бренд',
-                'Модель техники',
+                'Наименование товара',
             ],
             [
+                "Оставьте пустым \r\nдля добавления нового",
                 'Строка',
                 'Строка',
                 'Строка',
@@ -160,6 +164,7 @@ class StatsExport implements FromQuery, ShouldAutoSize, WithMapping, WithHeading
     public function map($row) : array
     {
         $result = [
+            $row->id,
             $row->category->title,
             $row->brand->title,
             $row->title,

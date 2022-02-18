@@ -20,7 +20,7 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 class Attribute extends Resource
 {
     public static $group = 'Статистика';
-
+    public static int $order = 3;
     /**
      * Get the displayable label of the resource.
      *
@@ -55,13 +55,22 @@ class Attribute extends Resource
      */
     public static $title = 'title';
 
+    public function subtitle()
+    {
+        if ($this->group) {
+            return "Группа: {$this->group->title}";
+        } else {
+            return "Без группы";
+        }
+    }
+
     /**
      * The columns that should be searched.
      *
      * @var array
      */
     public static $search = [
-        'id',
+        'id', 'title'
     ];
 
     /**

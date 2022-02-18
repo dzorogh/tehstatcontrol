@@ -45,7 +45,10 @@ class StatsByBrand
     private function makeQuery($query, $attributeId): Builder
     {
         $query->groupBy('stats_products.brand_id');
-        $query->join('stats_attribute_values', 'stats_attribute_values.product_id', '=', 'stats_products.id');
+
+        $query->join('stats_attribute_values', 'stats_attribute_values.attributable_id', '=', 'stats_products.id')
+            ->where('stats_attribute_values.attributable_type', '=', 'product');
+
         $query->where('attribute_id', $attributeId);
 
         if ($this->yearId) {
@@ -58,7 +61,7 @@ class StatsByBrand
         $query->with('brand');
         $query->select([
             DB::raw('avg(value) as avg'),
-            'brand_id'
+            'stats_products.brand_id'
         ]);
 
         return $query;

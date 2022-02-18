@@ -4,6 +4,7 @@ namespace App\Nova;
 
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
@@ -12,6 +13,7 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 class Product extends Resource
 {
     public static $group = 'Статистика';
+    public static int $order = 6;
 
     /**
      * Get the displayable label of the resource.
@@ -20,7 +22,7 @@ class Product extends Resource
      */
     public static function label()
     {
-        return __('Модели техники');
+        return __('Товары');
     }
 
     /**
@@ -30,7 +32,7 @@ class Product extends Resource
      */
     public static function singularLabel()
     {
-        return __('Модель техники');
+        return __('Товар');
     }
 
     /**
@@ -45,7 +47,7 @@ class Product extends Resource
      *
      * @var string
      */
-    public static $title = 'id';
+    public static $title = 'title';
 
     /**
      * The columns that should be searched.
@@ -53,7 +55,7 @@ class Product extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'id', 'title'
     ];
 
     /**
@@ -65,10 +67,11 @@ class Product extends Resource
     public function fields(Request $request)
     {
         return [
-//            ID::make(__('ID'), 'id')->sortable(),
-            Text::make(__('Название'), 'title'),
-
-            BelongsTo::make(__('Бренд'), 'brand', Brand::class)->showOnIndex(true)
+            ID::make(__('ID'), 'id')->sortable(),
+            Text::make(__('Название'), 'title')->sortable(),
+            BelongsTo::make(__('Бренд'), 'brand', Brand::class)->showOnIndex(true),
+            BelongsTo::make(__('Категория'), 'category', Category::class)->showOnIndex(true),
+            HasMany::make(__('Аттрибуты'), 'values', AttributeValue::class)->showOnIndex(true)
         ];
     }
 

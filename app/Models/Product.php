@@ -31,9 +31,9 @@ class Product extends Model
         return $this->belongsTo(Category::class, 'category_id');
     }
 
-    public function values(): HasMany
+    public function values()
     {
-        return $this->hasMany(AttributeValue::class, 'product_id');
+        return $this->morphMany(AttributeValue::class, 'attributable');
     }
 
     public function scopeByBrands($query, array $brands = null)
@@ -58,7 +58,7 @@ class Product extends Model
                 $query->byYear($yearId);
             });
 
-            $query->with('values', function (HasMany $query) use ($yearId) {
+            $query->with('values', function ($query) use ($yearId) {
                 /** @var AttributeValue $query */
                 $query->byYear($yearId);
             });

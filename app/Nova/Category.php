@@ -11,6 +11,7 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 class Category extends Resource
 {
     public static $group = 'Статистика';
+    public static int $order = 4;
 
     /**
      * Get the displayable label of the resource.
@@ -19,7 +20,7 @@ class Category extends Resource
      */
     public static function label()
     {
-        return __('Типы техники');
+        return __('Категории');
     }
 
     /**
@@ -29,7 +30,7 @@ class Category extends Resource
      */
     public static function singularLabel()
     {
-        return __('Тип техники');
+        return __('Категория');
     }
 
     /**
@@ -64,6 +65,7 @@ class Category extends Resource
     public function fields(Request $request)
     {
         return [
+            ID::make(__('ID'), 'id')->sortable(),
             Text::make(__('Название'), 'title')->sortable(),
             BelongsTo::make(__('Основная характеристика'), 'main_attribute', Attribute::class)->sortable(),
         ];

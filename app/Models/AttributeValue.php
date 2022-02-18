@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\Request;
 
 /**
@@ -18,12 +19,22 @@ class AttributeValue extends Model
     use HasFactory;
 
     protected $table = 'stats_attribute_values';
-    protected $fillable = ['value', 'attribute_id', 'product_id', 'year_id'];
+    protected $fillable = ['value', 'attribute_id', 'attributable_id', 'attributable_type', 'year_id'];
 
-    public function product(): BelongsTo
+    public function attributable(): MorphTo
     {
-        return $this->belongsTo(Product::class, 'product_id');
+        return $this->morphTo();
     }
+
+/*    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class, 'attributable_id');
+    }
+
+    public function brand(): BelongsTo
+    {
+        return $this->belongsTo(Brand::class, 'attributable_id');
+    }*/
 
     public function attribute(): BelongsTo
     {

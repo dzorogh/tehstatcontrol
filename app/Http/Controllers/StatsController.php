@@ -109,7 +109,8 @@ class StatsController extends Controller
 
         $attributes = Attribute::query()
             ->whereHas('values', function (Builder $query) use ($requestFilters) {
-                $query->whereHas('product', function (Builder $query) use ($requestFilters) {
+                $query->where('attributable_type', 'product');
+                $query->whereHas('attributable', function (Builder $query) use ($requestFilters) {
                     /** @var Product $query */
                     $query->byBrands($requestFilters->brands);
                     $query->byCategory($requestFilters->categoryId);
@@ -128,7 +129,7 @@ class StatsController extends Controller
 
         $attributesValuesQuery = AttributeValue::query()
             ->select('value', 'attribute_id')
-            ->whereHas('product', function (Builder $query) use ($requestFilters) {
+            ->whereHas('attributable', function (Builder $query) use ($requestFilters) {
                 /** @var Product $query */
                 $query->byBrands($requestFilters->brands);
                 $query->byCategory($requestFilters->categoryId);
@@ -151,7 +152,8 @@ class StatsController extends Controller
                     $query->orWhere(function ($query) use ($attribute, $requestFilters) {
                         $query->where('attribute_id', $attribute->id); // Maybe not necessary?
 
-                        $query->whereHas('product', function ($query) use ($requestFilters, $attribute) {
+                        $query->where('attributable_type', 'product');
+                        $query->whereHas('attributable', function ($query) use ($requestFilters, $attribute) {
 
                             // All attributes except current
                             /** @var Product $query */

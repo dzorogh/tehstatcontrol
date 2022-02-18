@@ -40,15 +40,23 @@ class StatsImport implements WithEvents, OnEachRow, WithHeadingRow, WithChunkRea
         $rowIndex = $row->getIndex();
         $row = $row->toArray();
 
-//        Log::info('Reading row', ['row' => $row, 'rowIndex' => $rowIndex]);
+        Log::info('Reading row', ['row' => $row, 'rowIndex' => $rowIndex]);
 
         if ($rowIndex > 3) {
+            $productId = null;
             $productTitle = '';
             $brandTitle = '';
             $categoryTitle = '';
             $attributes = [];
 
             foreach ($row as $columnIndex => $columnValue) {
+//                Log::info('Column', ['columnIndex' => $columnIndex, 'columnValue' => $columnValue]);
+
+                if ($columnIndex === 'product.id') {
+                    $productId = $columnValue;
+                    continue;
+                }
+
                 if ($columnIndex === 'product.title') {
                     $productTitle = $columnValue;
                     continue;
@@ -84,6 +92,7 @@ class StatsImport implements WithEvents, OnEachRow, WithHeadingRow, WithChunkRea
             }
 
 //            Log::info('Read columns at row ' . $rowIndex, [
+//                'productId' => $productId,
 //                'productTitle' => $productTitle,
 //                'brandTitle' => $brandTitle,
 //                'categoryTitle' => $categoryTitle,
@@ -107,28 +116,48 @@ class StatsImport implements WithEvents, OnEachRow, WithHeadingRow, WithChunkRea
 //                    'brandTitle' => $brandTitle
 //                ]);
 
-                $product = Product::create([
-                    'title' => $productTitle,
-                    'category_id' => $categoryId,
-                    'brand_id' => $brandId
-                ]);
-
+                if ($productId) {
+                    Product::whereId($productId)->update([
+                        'title' => $productTitle,
+                        'category_id' => $categoryId,
+                        'brand_id' => $brandId
+                    ]);
+                } else {
+                    $productId = Product::query()->create([
+                        'title' => $productTitle,
+                        'category_id' => $categoryId,
+                        'brand_id' => $brandId
+                    ])->id;
+                }
 
 //                Log::info('Product', [
 //                    'product' => $product
 //                ]);
 
                 foreach ($attributes as $attribute) {
-                    $attributeId = $attribute['attribute_id'];
-                    $yearId = $attribute['year_id'];
+                    $attributeId = $attribute['attribute_id'] ?? null;
+                    $yearId = $attribute['year_id'] ?? null;
 
-                    AttributeValue::query()
-                        ->create([
-                            'year_id' => $yearId,
+                    if ($attributeId && $productId) {
+                        $searchableAttributes = [
                             'attribute_id' => $attributeId,
-                            'product_id' => $product->id,
-                            'value' => $attribute['value']
-                        ]);
+                            'product_id' => $productId,
+                        ];
+
+                        if ($yearId) {
+                            $searchableAttributes['year_id'] = $yearId;
+                        }
+
+//                        Log::info('$searchableAttributes', $searchableAttributes);
+
+                        AttributeValue::query()->updateOrCreate(
+                            $searchableAttributes,
+                            [
+                                'value' => $attribute['value']
+                            ]
+                        );
+                    }
+
                 }
             }
         }
@@ -136,14 +165,14 @@ class StatsImport implements WithEvents, OnEachRow, WithHeadingRow, WithChunkRea
 
     public static function beforeImport(BeforeImport $event)
     {
-        Brand::query()->delete();
-        Product::query()->delete();
-        AttributeValue::query()->delete();
+//        Brand::query()->delete();
+//        Product::query()->delete();
+//        AttributeValue::query()->delete();
     }
 
-    public static function importFailed(importFailed $event)
+    public static function importFailed(ImportFailed $event)
     {
-        Log::alert('Import Failed', ['event' => $event]);
+        Log::alert('Import Failed', ['event' => $event->e]);
     }
 
     public function chunkSize(): int

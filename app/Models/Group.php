@@ -27,4 +27,9 @@ class Group extends Model
     {
         return $this->hasMany(Attribute::class, 'group_id');
     }
+
+    public function values()
+    {
+        return $this->morphMany(AttributeValue::class, 'attributable');
+    }
 }
