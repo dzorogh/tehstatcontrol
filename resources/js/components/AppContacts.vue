@@ -7,7 +7,7 @@
     </label>
     <input
       type="text"
-      class="block w-96 rounded"
+      class="block w-full max-w-lg rounded"
     >
   </div>
   
@@ -17,7 +17,7 @@
     </label>
     <input
       type="email"
-      class="block w-96 rounded"
+      class="block w-full max-w-lg rounded"
     >
   </div>
   
@@ -27,7 +27,7 @@
     </label>
     <input
       type="text"
-      class="block w-96 rounded"
+      class="block w-full max-w-lg rounded"
     >
   </div>
   
@@ -37,7 +37,7 @@
     </label>
     <input
       type="tel"
-      class="block w-96 rounded"
+      class="block w-full max-w-lg rounded"
     >
   </div>
   
@@ -46,7 +46,7 @@
       Ваше Сообщение
     </label>
     <textarea
-      class="block w-96 rounded"
+      class="block w-full max-w-xl rounded"
     />
   </div>
   
@@ -55,22 +55,32 @@
       type="checkbox"
       class="w-6 h-6 text-teal-400 rounded"
     >
-    Согласие с <router-link to="/privacy-policy">политикой конфиденциальности</router-link>
+    <span>
+      Согласие с
+      <router-link
+        to="/privacy-policy"
+        class="text-teal-600"
+      >
+        политикой конфиденциальности
+      </router-link>
+    </span>
   </label>
-
-  <button
-    type="submit"
-    class="inline-block py-3 px-6 text-lg font-bold text-zinc-100 bg-teal-500 rounded"
-  >
-    Отправить
-  </button>
+  
+  <div class="grid lg:block">
+    <button
+      type="submit"
+      class="inline-block py-3 px-6 text-lg font-bold text-zinc-100 bg-teal-500 rounded"
+    >
+      Отправить
+    </button>
+  </div>
 </template>
 
 <script setup lang="ts">
 import AppPageTitle from './AppPageTitle.vue';
 import { setTitle } from '../title';
 
-setTitle('Контакты')
+setTitle('Контакты');
 
 </script>
 

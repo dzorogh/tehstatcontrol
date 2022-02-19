@@ -1,10 +1,10 @@
 <template>
   <div class="mb-5 bg-zinc-200 rounded">
-    <div class="flex flex-row">
+    <div class="flex flex-col divide-y divide-zinc-300 lg:flex-row lg:divide-0">
       <div
         v-for="(tab, index) in tabs"
         :key="index"
-        class="py-2 px-3 font-bold hover:text-teal-700 cursor-pointer"
+        class="py-2 px-3 text-sm font-bold hover:text-teal-700 cursor-pointer lg:text-base"
         :class="{'text-zinc-500': index !== selected}"
         @click="changeTab(index)"
       >
@@ -12,14 +12,14 @@
       </div>
     </div>
     
-    <div class="grid grid-cols-2 gap-12 p-6 bg-zinc-100 rounded">
+    <div class="grid grid-cols-1 gap-4 p-3 bg-zinc-100 rounded lg:grid-cols-2 lg:gap-12 lg:p-6">
       <BarChart
-        ref="barChartRef"
+        :ref="barChartRef"
         :chart-data="chartData"
         :options="chartOptions"
       />
       <LineChart
-        ref="lineChartRef"
+        :ref="lineChartRef"
         :chart-data="chartData"
         :options="chartOptions"
       />
@@ -29,6 +29,8 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
+
 import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
 import { BarChart, ExtractComponentData, LineChart } from 'vue-chart-3';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -47,20 +49,23 @@ const props = defineProps<{
     attribute: Attribute
   }[]
 }>();
+
 const emit = defineEmits<Emits>();
 
 Chart.register(...registerables);
 Chart.register(ChartDataLabels);
 
+
 const attribute = computed(() => {
-  return props.tabs[props.selected].attribute
+  return props.tabs[props.selected].attribute;
 });
 
 const chartData = computed<ChartData>(() => ({
-  labels: props.tabs[props.selected].brands.slice(0, 10),
+  labels: props.tabs[props.selected].brands.slice(0, chartItemsMax.value),
+  
   datasets: [
     {
-      data: props.tabs[props.selected].values.slice(0, 10),
+      data: props.tabs[props.selected].values.slice(0, chartItemsMax.value),
       backgroundColor: [
         '#b91c1c',
         '#be123c',
@@ -81,10 +86,14 @@ const chartData = computed<ChartData>(() => ({
   ],
 }));
 
-// const lineChartRef = ref<ExtractComponentData<typeof LineChart>>();
-const barChartRef = ref<ExtractComponentData<typeof BarChart>>();
+const breakpoints = useBreakpoints(breakpointsTailwind);
+
+const chartItemsMax = computed(() => {
+  return breakpoints.isGreater('md') ? 10 : 5;
+})
 
 const chartOptions = computed<ChartOptions<'line' | 'bar'>>(() => ({
+  responsive: true,
   plugins: {
     legend: {
       display: false,
@@ -95,13 +104,13 @@ const chartOptions = computed<ChartOptions<'line' | 'bar'>>(() => ({
       },
       backgroundColor: '#27272a',
       borderRadius: 5,
-      color: '#ffffff'
+      color: '#ffffff',
     },
     tooltip: {
       callbacks: {
         label: (context) => {
           const value = context.raw as number || 0;
-        
+          
           return formatDataType(attribute.value.dataType, value);
         },
       },
@@ -125,9 +134,13 @@ const chartOptions = computed<ChartOptions<'line' | 'bar'>>(() => ({
   },
 }));
 
+
 function changeTab(index) {
   emit('update:selected', index);
 }
+
+const lineChartRef = ref<ExtractComponentData<typeof BarChart>>();
+const barChartRef = ref<ExtractComponentData<typeof LineChart>>();
 
 </script>
 

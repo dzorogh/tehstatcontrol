@@ -1,6 +1,6 @@
 <template>
   <tr
-    class="group bg-zinc-100 even:bg-zinc-200 hover:bg-zinc-300"
+    class="bg-zinc-100 even:bg-zinc-200 hover:bg-zinc-300"
   >
     <td :class="['text-zinc-500 text-sm text-right pl-4']">
       {{ rowNumber }}
@@ -25,12 +25,12 @@
       :key="attribute.id"
       :class="[...cellClass]"
     >
-      <div v-if="attribute.dataType === 'comment'">
-        {{ getAttributeValue(product, attribute) }}
-      </div>
+      <template v-if="attribute.dataType === 'comment' && getAttributeValue(product, attribute).toString()">
+        <AppStatsComment :text="getAttributeValue(product, attribute).toString()" />
+      </template>
       
       <div
-        v-if="attribute.dataType === 'country'"
+        v-else-if="attribute.dataType === 'country'"
         class="flex gap-4 items-center"
       >
         <country-flag
@@ -43,9 +43,12 @@
         </span>
       </div>
       
-      <div v-else>
-        {{ getAttributeValue(product, attribute).format() }}
-      </div>
+      <template v-else>
+        {{
+          getAttributeValue(product, attribute)
+            .format()
+        }}
+      </template>
     </td>
   </tr>
 </template>
@@ -55,6 +58,8 @@ import { Attribute } from '../types/Attribute';
 import { Product } from '../types/Product';
 import { formatDataType } from '../formatters/valueFormatters';
 import CountryFlag from 'vue-country-flag-next';
+import AppStatsComment from './AppStatsComment.vue';
+import { Value } from '../types/Value';
 
 defineProps<{
   product: Product;
@@ -63,12 +68,16 @@ defineProps<{
   rowNumber: number;
 }>();
 
-function getAttributeValue(product: Product, attribute: Attribute) {
+function getProductAttribute(product, attribute): Value | undefined {
+  return product.valuesByAttributeId[attribute.id];
+}
+
+function getAttributeValue(product: Product, attribute: Attribute): object {
   let result = {
-    format: null
+    format: null,
   };
   
-  const value = product.valuesByAttributeId[attribute.id]?.value;
+  const value = getProductAttribute(product, attribute)?.value;
   
   result.format = () => {
     if (value) {
@@ -76,13 +85,13 @@ function getAttributeValue(product: Product, attribute: Attribute) {
     } else {
       return '';
     }
-  }
+  };
   
   result.toString = function () {
     return value;
-  }
+  };
   
-  return result
+  return result;
 }
 
 function getCountryName(code) {

@@ -1,9 +1,15 @@
 <template>
-  <AppSlides :slides="slides" />
-
-  <div class="mt-16">
-    <AppNews :news="news" />
-  </div>
+  <template v-if="loading">
+    <AppLoading />
+  </template>
+  
+  <template v-else>
+    <AppSlides :slides="slides" />
+  
+    <div class="mt-6 lg:mt-12">
+      <AppNews :news="news" />
+    </div>
+  </template>
 </template>
 
 <script setup lang="ts">
@@ -13,6 +19,7 @@ import { reactive, ref } from 'vue';
 import AppNews from './AppNews.vue';
 import AppSlides from './AppSlides.vue';
 import { setTitle } from '../title';
+import AppLoading from './AppLoading.vue';
 
 const slides = [
   {
@@ -26,9 +33,11 @@ const slides = [
 ];
 
 const news = ref(null);
+const loading = ref(true);
 
 axios.get('/api/news').then((response) => {
   news.value = response.data.data;
+  loading.value = false;
 });
 
 setTitle('Государственный центр технических исследований', true)

@@ -1,22 +1,22 @@
 <template>
-  <div>
+  <div class="flex flex-col grow">
     <AppStatsLoading v-if="pageLoading" />
-    
-    <div v-if="!pageLoading">
+    <template v-else>
       <div
         v-if="group"
-        class="mb-5"
+        class="mb-6"
       >
         <AppPageTitle :title="group.title" />
         
-        <div class="prose">
+        <div class="prose-sm lg:prose">
           {{ group.description }}
         </div>
       </div>
       
-      <div v-if="list">
+      <template v-if="list">
         <AppStatsCharts
           v-if="list.chart"
+          class="overflow-auto"
           :selected="selectedChartTabIndex"
           :tabs="list.chart"
           @update:selected="selectedChartTabIndex = $event"
@@ -25,22 +25,23 @@
         <!--        <pre>{{ JSON.stringify(list.brandsStatsFormatted, null, 2) }}</pre>-->
         
         <AppStatsFilters
+          
           :request-filters="list.requestFilters"
           :available-filters="list.availableFilters"
           @update:filters="updateFilters"
         />
         
-        <div>
-          <AppStatsPagination
-            class="my-4"
-            position="top"
-            :current-page="list.meta.current_page"
-            :last-page="list.meta.last_page"
-            @update:page="updatePage"
-          />
-          
+        <AppStatsPagination
+          class="my-4"
+          position="top"
+          :current-page="list.meta.current_page"
+          :last-page="list.meta.last_page"
+          @update:page="updatePage"
+        />
+        
+        <div class="overflow-hidden rounded-lg shadow-md">
           <div
-            class="overflow-hidden shadow-md sm:rounded-lg"
+            class="overflow-auto "
             :class="{'animate-pulse' : listLoading}"
           >
             <table class="min-w-full">
@@ -64,22 +65,22 @@
               </tbody>
             </table>
           </div>
-          
-          <AppStatsPagination
-            :meta="list.meta"
-            class="my-4"
-            position="bottom"
-            :current-page="list.meta.current_page"
-            :last-page="list.meta.last_page"
-            @update:page="updatePage"
-          />
         </div>
+        
+        <AppStatsPagination
+          :meta="list.meta"
+          class="my-4"
+          position="bottom"
+          :current-page="list.meta.current_page"
+          :last-page="list.meta.last_page"
+          @update:page="updatePage"
+        />
         
         <div class="text-center text-gray-500">
           Моделей найдено: {{ list.meta.total }}
         </div>
-      </div>
-    </div>
+      </template>
+    </template>
   </div>
 </template>
 
@@ -96,7 +97,6 @@ import { RequestParams } from '../types/RequestParams';
 import { List } from '../types/List';
 
 // app
-import { useStore } from '../store';
 import { setTitle } from '../title';
 
 // components
@@ -106,11 +106,10 @@ import AppStatsPagination from './AppStatsPagination.vue';
 import AppStatsDataRow from './AppStatsDataRow.vue';
 import AppStatsHeadingRow from './AppStatsHeadingRow.vue';
 import AppStatsCharts from './AppStatsCharts.vue';
-import AppStatsLoading from './AppStatsLoading.vue';
+import AppStatsLoading from './AppLoading.vue';
 
 // use composables
 const route = useRoute();
-const store = useStore();
 
 const pageLoading = ref(false);
 const listLoading = ref(false);
@@ -205,6 +204,8 @@ const selectedChartTabIndex = ref(0);
 const cellClass = [
   'py-4', 'px-6',
 ];
+
+
 
 </script>
 

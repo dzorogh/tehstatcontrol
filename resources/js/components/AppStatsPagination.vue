@@ -127,7 +127,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowNarrowLeftIcon, ArrowNarrowRightIcon } from '@heroicons/vue/solid';
+import { ArrowNarrowLeftIcon, ArrowNarrowRightIcon } from '@heroicons/vue/outline';
 import { computed, reactive } from 'vue';
 
 const props = defineProps<{
@@ -179,17 +179,17 @@ function handlePreviousPageClick() {
 }
 
 const classes = reactive({
-  root: ['select-none', 'mx-3'],
+  root: ['select-none', 'lg:mx-3', 'overflow-x-auto', 'overflow-y-hidden'],
   row: ['flex', 'flex-row', 'gap-6', '-mb-px'],
   number: {
-    default: ['py-3', 'px-5', 'font-bold'],
+    default: ['py-3', 'lg:px-5', 'px-4', 'font-bold'],
     active: ['text-teal-600', 'border-teal-600'],
     inactive: ['cursor-pointer', 'hover:border-teal-600', 'border-transparent'],
   },
   arrow: {
     previous: ['flex-ro'],
     next: ['flex-row-reverse'],
-    default: ['group', 'flex', 'flex-row', 'flex-none', 'gap-4', 'items-center', 'cursor-pointer', 'w-50'],
+    default: ['group', 'lg:flex', 'hidden', 'flex-row', 'flex-none', 'gap-4', 'items-center', 'cursor-pointer', 'w-50'],
     text: ['py-3', 'border-transparent', 'group-hover:border-teal-600', 'cursor-pointer', 'flex-none'],
     icon: ['flex-none', 'my-3', 'w-5', 'h-5'],
   },

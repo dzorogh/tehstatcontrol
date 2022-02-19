@@ -23,8 +23,12 @@ namespace App\Models{
  * @property string $rating_direction
  * @property int $by_year
  * @property int $show_on_chart
+ * @property int $filterable
+ * @property int $sortable
  * @property int|null $order
  * @property int|null $group_id
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Category[] $category
+ * @property-read int|null $category_count
  * @property-read \App\Models\Group|null $group
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AttributeValue[] $values
  * @property-read int|null $values_count
@@ -34,11 +38,13 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereByYear($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereDataType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereFilterable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereGroupId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereOrder($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereRatingDirection($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereShowOnChart($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereSortable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereUpdatedAt($value)
  */
@@ -54,20 +60,22 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string $value
- * @property int $product_id
  * @property int $attribute_id
  * @property int|null $year_id
+ * @property string $attributable_type
+ * @property int $attributable_id
+ * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $attributable
  * @property-read \App\Models\Attribute $attribute
- * @property-read \App\Models\Product $product
  * @property-read \App\Models\Year|null $year
  * @method static \Illuminate\Database\Eloquent\Builder|AttributeValue byYear($yearId = null)
  * @method static \Illuminate\Database\Eloquent\Builder|AttributeValue newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AttributeValue newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|AttributeValue query()
+ * @method static \Illuminate\Database\Eloquent\Builder|AttributeValue whereAttributableId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|AttributeValue whereAttributableType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AttributeValue whereAttributeId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AttributeValue whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AttributeValue whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|AttributeValue whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AttributeValue whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AttributeValue whereValue($value)
  * @method static \Illuminate\Database\Eloquent\Builder|AttributeValue whereYearId($value)
@@ -86,6 +94,8 @@ namespace App\Models{
  * @property string $title
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Product[] $products
  * @property-read int|null $products_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AttributeValue[] $values
+ * @property-read int|null $values_count
  * @method static \Illuminate\Database\Eloquent\Builder|Brand newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Brand newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Brand query()
@@ -137,6 +147,8 @@ namespace App\Models{
  * @property string|null $icon
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Attribute[] $attributes
  * @property-read int|null $attributes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\AttributeValue[] $values
+ * @property-read int|null $values_count
  * @method static \Illuminate\Database\Eloquent\Builder|Group newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Group newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Group query()

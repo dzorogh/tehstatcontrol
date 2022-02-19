@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/vue/solid';
+import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/vue/outline';
 import { Attribute } from '../types/Attribute';
 import { Sort } from '../types/Sort';
 

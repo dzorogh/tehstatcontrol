@@ -15,7 +15,7 @@
     </head>
     <body class="min-h-full h-full">
 
-        <div id="app" class="flex flex-col h-full min-h-full"></div>
+        <div id="app" class="min-h-full h-full"></div>
 
         <script src="{{ asset('js/manifest.js') }}"></script>
         <script src="{{ asset('js/vendor.js') }}"></script>

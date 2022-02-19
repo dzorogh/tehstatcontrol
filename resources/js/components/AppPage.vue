@@ -1,51 +1,34 @@
 <template>
-  <div class="h-full">
-    <div
-      v-if="loading"
-      class="h-full"
-    >
-      <div class="animate-pulse prose prose-xl">
-        <div class="mb-2 h-12 bg-slate-700 rounded" />
-        <div class="mb-12 w-1/5 h-12 bg-slate-700 rounded" />
-        <div
-          v-for="n in 5"
-          :key="n"
-          class="mb-3 h-6 bg-slate-700 rounded"
-        />
-        <div class="mb-3 w-1/4 h-6 bg-slate-700 rounded" />
-      </div>
-    </div>
-    
-    <div
-      v-if="error"
-      class="error"
-    >
-      {{ error }}
-    </div>
+  <div class="flex flex-col grow">
+    <AppLoading v-if="loading" />
     
     <article
       v-if="page && !loading"
-      class="grid grid-cols-4 gap-12 p-12 h-full bg-zinc-100"
+      class="overflow-hidden grid-cols-4 gap-12 h-full bg-zinc-100 lg:grid lg:p-12"
     >
-      <div>
+      <div class="p-4 lg:p-0">
         <AppPageTitle
           :title="page.title"
-          class="mb-12"
+          class="mb-0 lg:mb-12"
         />
-        
-        <div v-if="page.image">
-          <img
-            :src="'/storage/' + page.image"
-            alt=""
-          >
-        </div>
       </div>
-      <div class="col-span-3 h-full">
-        <div class="columns-3 gap-12 max-w-full h-full prose columns-fill-auto">
+      
+      <div
+        v-if="page.image"
+        class="lg:mb-12"
+      >
+        <img
+          :src="'/storage/' + page.image"
+          alt=""
+        >
+      </div>
+      
+      <div class="col-span-3 p-4 h-full lg:p-0">
+        <div class="gap-12 max-w-full h-full prose-sm lg:columns-3 lg:prose columns-fill-auto">
           <p v-if="page.excerpt">
             {{ page.excerpt }}
           </p>
-  
+          
           <div v-html="page.content" />
         </div>
       </div>
@@ -59,6 +42,10 @@ import { useRoute, useRouter } from 'vue-router';
 import axios from 'axios';
 import AppPageTitle from './AppPageTitle.vue';
 import { setTitle } from '../title';
+import AppLoading from './AppLoading.vue';
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
+
+const breakpoints = useBreakpoints(breakpointsTailwind);
 
 const router = useRouter();
 const route = useRoute();

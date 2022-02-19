@@ -63,7 +63,7 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue';
-import { ChevronDownIcon, CheckCircleIcon, CheckIcon } from '@heroicons/vue/solid';
+import { ChevronDownIcon, CheckCircleIcon, CheckIcon } from '@heroicons/vue/outline';
 
 // @ts-ignore
 import { directive as vClickOutside } from 'click-outside-vue3';

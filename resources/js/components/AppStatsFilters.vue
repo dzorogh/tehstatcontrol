@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="flex flex-row gap-4 mb-4">
-      <div class="w-64">
+    <div class="flex flex-row flex-wrap gap-4 mb-4">
+      <div class="grow">
         <AppSelect
           v-model="selectedFilters.yearId"
           :options="availableFilters.years"
@@ -12,7 +12,7 @@
           @change="applyFilters"
         />
       </div>
-      <div class="w-64">
+      <div class="grow">
         <AppSelect
           v-model="selectedFilters.categoryId"
           :options="availableFilters.categories"
@@ -23,7 +23,7 @@
           @change="applyFilters"
         />
       </div>
-      <div class="w-64">
+      <div class="grow">
         <AppSelect
           v-model="selectedFilters.brandsIds"
           :options="availableFilters.brands"
@@ -43,6 +43,7 @@
       <div
         v-for="attribute in sortedFilterAttributes"
         :key="attribute.id"
+        class="grow"
       >
         <AppSelect
           :model-value="getAttributeFilter(attribute.id)"
@@ -63,7 +64,7 @@
       class="mt-4"
     >
       <button
-        class="inline-flex items-center py-1 px-3 text-sm text-zinc-100 bg-teal-600 hover:bg-teal-500 rounded cursor-pointer select-none"
+        class="flex items-center py-1 px-3 text-sm text-zinc-100 bg-teal-600 hover:bg-teal-500 rounded cursor-pointer select-none lg:inline-flex"
         @click="resetFilters"
       >
         <TrashIcon class="mr-2 w-4 h-4" />
@@ -74,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { TrashIcon } from '@heroicons/vue/solid';
+import { TrashIcon } from '@heroicons/vue/outline';
 import { computed, reactive, ref, watch } from 'vue';
 import { useDebounceFn } from '@vueuse/core';
 
