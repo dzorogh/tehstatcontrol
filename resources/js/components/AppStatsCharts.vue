@@ -1,6 +1,6 @@
 <template>
   <div class="mb-5 bg-zinc-200 rounded">
-    <div class="flex flex-col divide-y divide-zinc-300 lg:flex-row lg:divide-0">
+    <div class="flex flex-col divide-y divide-zinc-300 lg:flex-row lg:divide-y-0">
       <div
         v-for="(tab, index) in tabs"
         :key="index"
@@ -14,12 +14,12 @@
     
     <div class="grid grid-cols-1 gap-4 p-3 bg-zinc-100 rounded lg:grid-cols-2 lg:gap-12 lg:p-6">
       <BarChart
-        :ref="barChartRef"
+        ref="barChartRef"
         :chart-data="chartData"
         :options="chartOptions"
       />
       <LineChart
-        :ref="lineChartRef"
+        ref="lineChartRef"
         :chart-data="chartData"
         :options="chartOptions"
       />

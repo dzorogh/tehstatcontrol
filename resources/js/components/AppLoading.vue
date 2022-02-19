@@ -27,7 +27,6 @@
 </template>
 
 <script setup lang="ts">
-import { Circl } from '@heroicons/vue/outline';
 
 </script>
 

@@ -72,7 +72,7 @@ function getProductAttribute(product, attribute): Value | undefined {
   return product.valuesByAttributeId[attribute.id];
 }
 
-function getAttributeValue(product: Product, attribute: Attribute): object {
+function getAttributeValue(product: Product, attribute: Attribute) {
   let result = {
     format: null,
   };
