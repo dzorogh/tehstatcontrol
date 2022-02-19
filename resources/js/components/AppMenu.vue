@@ -5,7 +5,6 @@
     @mousemove="handleMouseEnter"
     @mouseleave="handleMouseLeave"
   >
-    {{ menuOpen }}
     <div class="flex flex-col gap-6 h-full lg:gap-8">
       <router-link
         v-for="item in store.groups"

@@ -44,7 +44,6 @@
     </div>
     
     <div class="p-2 ml-auto lg:hidden">
-      {{ store.menuOpen }}
       <a
         href=""
         @click.prevent="toggleMenu"
