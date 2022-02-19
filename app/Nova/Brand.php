@@ -4,6 +4,7 @@ namespace App\Nova;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
@@ -68,6 +69,7 @@ class Brand extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             Text::make(__('Название'), 'title')->sortable(),
+            HasMany::make(__('Аттрибуты'), 'values', AttributeValue::class)->showOnIndex(true)
         ];
     }
 

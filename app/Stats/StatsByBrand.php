@@ -4,7 +4,7 @@ namespace App\Stats;
 
 use App\Enums\AttributeDataType;
 use App\Enums\RatingDirection;
-use App\Http\Resources\Stats\AttributeResource;
+use App\Http\Resources\AttributeResource;
 use App\Models\Attribute;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;

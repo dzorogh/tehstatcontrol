@@ -141,7 +141,8 @@ class StatsImport implements WithEvents, OnEachRow, WithHeadingRow, WithChunkRea
                     if ($attributeId && $productId) {
                         $searchableAttributes = [
                             'attribute_id' => $attributeId,
-                            'product_id' => $productId,
+                            'attributable_id' => $productId,
+                            'attributable_type' => 'product',
                         ];
 
                         if ($yearId) {

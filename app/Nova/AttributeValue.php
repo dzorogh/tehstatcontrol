@@ -100,6 +100,8 @@ class AttributeValue extends Resource
                 Brand::class
             ])->sortable()->searchable(),
 
+            BelongsTo::make(__('Аттрибут'), 'attribute', Attribute::class)->hideWhenCreating()->hideWhenUpdating(),
+
             Select::make(__('Аттрибут'), 'attribute_id')->options(function () {
                 return array_filter(\App\Models\Attribute::query()
                     ->orderBy('group_id', 'desc')
@@ -111,7 +113,7 @@ class AttributeValue extends Resource
                     })
                     ->pluck('title', 'id')
                     ->toArray());
-            }),
+            })->hideFromIndex()->hideFromDetail(),
 
             BelongsTo::make(__('Год'), 'year', Year::class)
                 ->nullable()
@@ -130,7 +132,14 @@ class AttributeValue extends Resource
                     }
                 }),
 
-            Textarea::make(__('Значение'), 'value')->sortable()->help('test')];
+            Textarea::make(__('Значение'), 'value')
+                ->sortable()
+                ->help(
+                    (function () {
+
+                    })()
+                )
+        ];
     }
 
     /**

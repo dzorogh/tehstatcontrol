@@ -7,7 +7,7 @@ use Laravel\Nova\Resource as NovaResource;
 
 abstract class Resource extends NovaResource
 {
-    use RedirectAfterAction;
+//    use RedirectAfterAction;
 
     /**
      * Build an "index" query for the given resource.

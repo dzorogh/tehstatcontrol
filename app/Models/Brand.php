@@ -23,4 +23,9 @@ class Brand extends Model
     {
         return $this->hasMany(Product::class, 'brand_id');
     }
+
+    public function values()
+    {
+        return $this->morphMany(AttributeValue::class, 'attributable');
+    }
 }
