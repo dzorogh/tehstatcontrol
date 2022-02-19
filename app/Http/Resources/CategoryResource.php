@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Resources\Stats;
+namespace App\Http\Resources;
 
-use App\Models\Year;
+use App\Models\Category;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin Year
+ * @mixin Category
  */
-class YearResource extends JsonResource
+class CategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,7 +20,7 @@ class YearResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'value' => $this->value
+            'title' => $this->title
         ];
     }
 }

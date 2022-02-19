@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Stats;
+namespace App\Http\Resources;
 
 use App\Models\Brand;
 use Illuminate\Http\Resources\Json\JsonResource;

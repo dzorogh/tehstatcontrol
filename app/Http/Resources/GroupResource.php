@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Stats;
+namespace App\Http\Resources;
 
 use App\Models\Group;
 use Illuminate\Http\Request;

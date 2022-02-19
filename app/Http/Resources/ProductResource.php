@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Stats;
+namespace App\Http\Resources;
 
 use App\Models\Product;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -18,11 +18,23 @@ class ProductResource extends JsonResource
      */
     public function toArray($request)
     {
-        $values = AttributeValueResource::collection(
-            $this->whenLoaded('values')->keyBy('attribute_id')
+        $valuesCollection = collect([]);
+        $brandValuesCollection = collect([]);
+
+        if ($this->relationLoaded('values')) {
+            $valuesCollection = $this->values;
+        }
+
+        if ($this->relationLoaded('brand') && $this->brand->relationLoaded('values')) {
+            $brandValuesCollection = $this->brand->values;
+        }
+
+        $valuesResourceCollection = AttributeValueResource::collection(
+            $valuesCollection->merge($brandValuesCollection)->keyBy('attribute_id')
         );
 
-        $values->preserveKeys = true;
+        $valuesResourceCollection->preserveKeys = true;
+
 
         return [
             'id' => $this->id,
@@ -35,7 +47,7 @@ class ProductResource extends JsonResource
             'category' => new CategoryResource(
                 $this->whenLoaded('category')
             ),
-            'valuesByAttributeId' => $values,
+            'valuesByAttributeId' => $valuesResourceCollection,
         ];
     }
 }

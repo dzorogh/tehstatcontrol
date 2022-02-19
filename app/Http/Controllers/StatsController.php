@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductsRequest;
-use App\Http\Resources\Stats\AttributeResource;
-use App\Http\Resources\Stats\GroupResource;
-use App\Http\Resources\Stats\BrandResource;
-use App\Http\Resources\Stats\ProductResource;
-use App\Http\Resources\Stats\CategoryResource;
-use App\Http\Resources\Stats\YearResource;
+use App\Http\Resources\AttributeResource;
+use App\Http\Resources\GroupResource;
+use App\Http\Resources\BrandResource;
+use App\Http\Resources\ProductResource;
+use App\Http\Resources\CategoryResource;
+use App\Http\Resources\YearResource;
 use App\Models\Attribute;
 use App\Models\AttributeValue;
 use App\Models\Group;
@@ -71,10 +71,10 @@ class StatsController extends Controller
 
         /** @var Product|Builder $productsQuery */
         $productsQuery = Product::with([
-            'brand',
+            'brand.values',
             'category',
             'values.attribute.group',
-            'values.year'
+            'values.year',
         ]);
 
         // Filter products by all request params
@@ -186,6 +186,7 @@ class StatsController extends Controller
         // List of visible columns
         $dynamicColumns = collect();
 
+        // Columns from category
         if ($requestFilters->categoryId) {
             /** @var Category $category */
             $category = Category::query()->find($requestFilters->categoryId);
@@ -195,13 +196,10 @@ class StatsController extends Controller
             }
         }
 
+        // Columns from group (all of them)
         if ($requestFilters->groupId) {
             $dynamicColumns = $dynamicColumns
-                ->merge(
-                    AttributeResource::collection(
-                        $attributes->where('group_id', $requestFilters->groupId)
-                    )
-                );
+                ->merge(Attribute::query()->where('group_id', $requestFilters->groupId)->get());
         }
 
         // Stats by brand
@@ -220,7 +218,7 @@ class StatsController extends Controller
             ],
             // TODO: Remove not-actual filters from request filters???
             'requestFilters' => $requestFilters->all(),
-            'dynamicColumns' => $dynamicColumns,
+            'dynamicColumns' => AttributeResource::collection($dynamicColumns),
             'chart' => $chart,
             'sort' => $sort
         ]);
