@@ -27,45 +27,7 @@ class StatsExport implements FromQuery, ShouldAutoSize, WithMapping, WithHeading
 
     public function __construct()
     {
-        $this->attributesColumns = $this->getAttributesByYear();
-    }
-
-    private function getAttributesByYear(): array
-    {
-        $attributes = Attribute::query()
-            ->orderBy('order')
-            ->get();
-
-        $years = Year::query()
-            ->orderBy('value')
-            ->get();
-
-        $result = [];
-
-        foreach ($attributes as $attribute) {
-
-            if ($attribute->by_year) {
-                foreach ($years as $year) {
-                    $result[] = [
-                        'attribute_id' => $attribute->id,
-                        'attribute' => $attribute,
-                        'year_id' => $year->id,
-                        'year' => $year,
-                        'data_type' => $attribute->data_type
-                    ];
-                }
-            } else {
-                $result[] = [
-                    'attribute_id' => $attribute->id,
-                    'attribute' => $attribute,
-                    'year_id' => null,
-                    'year' => null,
-                    'data_type' => $attribute->data_type
-                ];
-            }
-        }
-
-        return $result;
+        $this->attributesColumns = Attribute::getAttributesByYear();
     }
 
     public function styles(Worksheet $sheet)

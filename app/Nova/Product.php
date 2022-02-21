@@ -7,8 +7,11 @@ use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\HasOne;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\MorphMany;
+use Laravel\Nova\Fields\MorphToMany;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Whitecube\NovaFlexibleContent\Flexible;
 
 class Product extends Resource
 {
@@ -66,13 +69,21 @@ class Product extends Resource
      */
     public function fields(Request $request)
     {
-        return [
+        $attributesByYear = \App\Models\Attribute::getAttributesByYear();
+        $values = $this->values;
+
+
+        $fields = [
             ID::make(__('ID'), 'id')->sortable(),
             Text::make(__('Название'), 'title')->sortable(),
             BelongsTo::make(__('Бренд'), 'brand', Brand::class)->showOnIndex(true),
             BelongsTo::make(__('Категория'), 'category', Category::class)->showOnIndex(true),
-            HasMany::make(__('Аттрибуты'), 'values', AttributeValue::class)->showOnIndex(true)
+            MorphMany::make(__('Аттрибуты'), 'values', AttributeValue::class)->showOnIndex(true),
+//            Flexible::make('Аттрибуты')
+//                ->preset(\App\Nova\Flexible\Presets\ProductAttributes::class)
         ];
+
+        return $fields;
     }
 
     /**
