@@ -29,7 +29,35 @@
         />
       </div>
       
-      <ChevronDownIcon :class="[...classes.labelChevronIcon, ...conditionalClasses(isDropdownOpen, classes.labelChevronIconOpen) ]" />
+      <ChevronDownIcon
+        v-if="!isLoading"
+        :class="[
+          ...classes.labelChevronIcon,
+          ...conditionalClasses(isDropdownOpen, classes.labelChevronIconOpen),
+        ]"
+      />
+      
+      <svg
+        v-if="isLoading"
+        :class="[...classes.labelLoadingIcon]"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        />
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        />
+      </svg>
     </div>
     
     <div
@@ -62,7 +90,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import { ChevronDownIcon, CheckCircleIcon, CheckIcon } from '@heroicons/vue/outline';
 
 // @ts-ignore
@@ -78,6 +106,7 @@ const props = defineProps<{
   optionLabel: ((option) => string) | string;
   optionValue: string;
   classes?: Classes;
+  isLoading?: boolean
 }>();
 
 const emit = defineEmits<{
@@ -92,6 +121,8 @@ function conditionalClasses(condition: boolean, classes: string[]): string[] {
 const isDropdownOpen = ref(false);
 
 function openDropdown() {
+  if (props.isLoading) return false;
+  
   isDropdownOpen.value = true;
 }
 
@@ -100,7 +131,7 @@ function closeDropdown() {
 }
 
 function toggleDropdown() {
-  isDropdownOpen.value = !isDropdownOpen.value;
+  isDropdownOpen.value ? closeDropdown() : openDropdown();
 }
 
 function getOptionLabel(option): string {
@@ -138,7 +169,7 @@ function isOptionActive(option) {
 
 function emitUpdate(value?) {
   emit('update:modelValue', value);
-  emit('change', value)
+  emit('change', value);
 }
 
 function toggleSelectOption(option) {
@@ -150,9 +181,9 @@ function toggleSelectOption(option) {
     // if single option result
     
     if (optionValue !== selected) {
-      emitUpdate(optionValue)
+      emitUpdate(optionValue);
     } else {
-      emitUpdate()
+      emitUpdate();
     }
   } else {
     // if multiply options result
@@ -169,10 +200,16 @@ function toggleSelectOption(option) {
       // add new item
       selected.push(optionValue);
     }
-  
-    emitUpdate(selected)
+    
+    emitUpdate(selected);
   }
 }
+
+watch(() => props.isLoading, (isLoading) => {
+  if (isLoading) {
+    closeDropdown();
+  }
+});
 
 </script>
 

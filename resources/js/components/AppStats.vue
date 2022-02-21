@@ -25,7 +25,7 @@
         <!--        <pre>{{ JSON.stringify(list.brandsStatsFormatted, null, 2) }}</pre>-->
         
         <AppStatsFilters
-          
+          :is-loading="listLoading"
           :request-filters="list.requestFilters"
           :available-filters="list.availableFilters"
           @update:filters="updateFilters"

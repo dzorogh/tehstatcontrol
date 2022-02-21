@@ -9,6 +9,7 @@
           option-label="value"
           option-value="id"
           :classes="defaultClasses"
+          :is-loading="isLoading"
           @change="applyFilters"
         />
       </div>
@@ -20,6 +21,7 @@
           option-label="title"
           option-value="id"
           :classes="defaultClasses"
+          :is-loading="isLoading"
           @change="applyFilters"
         />
       </div>
@@ -32,6 +34,7 @@
           option-label="title"
           option-value="id"
           :classes="defaultClasses"
+          :is-loading="isLoading"
           @change="applyFilters"
         />
       </div>
@@ -55,6 +58,7 @@
           :multiple="true"
           :classes="defaultClasses"
           
+          :is-loading="isLoading"
           @update:model-value="setAttributeFilter(attribute.id, $event)"
         />
       </div>
@@ -89,6 +93,7 @@ import { RequestFilters } from '../types/RequestFilters';
 const props = defineProps<{
   requestFilters: RequestFilters;
   availableFilters: AvailableFilters;
+  isLoading: boolean
 }>();
 
 const emit = defineEmits<{

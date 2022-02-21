@@ -30,6 +30,7 @@ export default {
   labelCounterIcon: ['w-3', 'h-3', 'rounded-full', 'ml-2', 'bg-emerald-800'],
   labelChevronIcon: ['flex-none', 'w-6', 'h-6', 'transition-transform', 'ml-2'],
   labelChevronIconOpen: ['rotate-180'],
+  labelLoadingIcon: ['flex-none', 'w-6', 'h-6', 'ml-2', 'text-zinc-800', 'animate-spin'],
   dropdown: [
     'absolute',
     'bg-zinc-200',
@@ -55,10 +56,9 @@ export default {
   ],
   optionLabel: ['grow'],
   optionIcon: [
-    'w-4',
-    'h-4',
+    'w-6',
+    'h-6',
     'ml-3',
-    'fill-teal-600',
     'p-px',
     'border-2 ',
     'border-teal-600',

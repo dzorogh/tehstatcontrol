@@ -6,6 +6,7 @@ export interface Classes {
   labelCounterNumber: string[],
   labelCounterIcon: string[],
   labelChevronIcon: string[],
+  labelLoadingIcon: string[],
   labelChevronIconOpen: string[],
   dropdown: string[],
   options: string[],
