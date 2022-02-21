@@ -3,7 +3,7 @@
     <div class="flex flex-col justify-center items-center">
       <router-link
         to="/"
-        class="mb-8"
+        class="flex-none mb-8"
       >
         <img
           src="/images/logo-tsc.svg"
@@ -15,7 +15,7 @@
       <a
         :href="'https://crm.globaldrive.ru/my.globaldrive.ru.php?return=' + redirectTo"
         type="submit"
-        class="inline-block py-3 px-6 text-lg font-bold text-zinc-100 bg-cyan-600 hover:bg-cyan-500 rounded"
+        class="inline-block flex-none py-3 px-6 text-lg font-bold text-zinc-100 bg-cyan-600 hover:bg-cyan-500 rounded"
       >
         Войти с помощью Битрикс24
       </a>

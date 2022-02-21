@@ -21,6 +21,7 @@ class AttributeResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
+            'description' => $this->description,
             'dataType' => $this->data_type,
             'byYear' => !!$this->by_year,
             'showOnChart' => !!$this->show_on_chart,

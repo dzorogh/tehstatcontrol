@@ -16,9 +16,14 @@
       {{ product.brand.title }}
     </td>
     <td
+      class=""
       :class="[...cellClass]"
     >
-      {{ product.title }}
+      <div
+        class="hover:line-clamp-none lg:line-clamp-2"
+      >
+        {{ product.title }}
+      </div>
     </td>
     <td
       v-for="attribute in columns"

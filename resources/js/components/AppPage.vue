@@ -6,30 +6,32 @@
       v-if="page && !loading"
       class="overflow-hidden grid-cols-4 gap-12 h-full bg-zinc-100 lg:grid lg:p-12"
     >
-      <div class="p-4 lg:p-0">
-        <AppPageTitle
-          :title="page.title"
-          class="mb-0 lg:mb-12"
-        />
-      </div>
-      
-      <div
-        v-if="page.image"
-        class="lg:mb-12"
-      >
-        <img
-          :src="'/storage/' + page.image"
-          alt=""
+      <div class="">
+        <div class="p-4 lg:p-0">
+          <AppPageTitle
+            :title="page.title"
+            class="mb-0 lg:mb-12"
+          />
+        </div>
+        
+        <div
+          v-if="page.image"
+          class="lg:mb-12"
         >
+          <img
+            :src="'/storage/' + page.image"
+            alt=""
+          >
+        </div>
       </div>
       
-      <div class="col-span-3 p-4 h-full lg:p-0">
-        <div class="gap-12 max-w-full h-full prose-sm lg:columns-3 lg:prose columns-fill-auto">
+      <div class="p-4 h-full lg:col-span-3 lg:p-0">
+        <div class="gap-12 h-full prose-sm lg:columns-3 lg:max-w-full lg:prose columns-fill-auto">
           <p v-if="page.excerpt">
             {{ page.excerpt }}
           </p>
           
-          <div v-html="page.content" />
+          <span v-html="page.content" />
         </div>
       </div>
     </article>

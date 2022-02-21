@@ -14,7 +14,7 @@
       />
     </th>
     <th
-      class="w-48"
+      class="w-36"
       :class="[...cellClass]"
     >
       <AppStatsHeadingTitle
@@ -24,7 +24,7 @@
       />
     </th>
     <th
-      class="w-auto min-w-[30rem]"
+      class="w-auto"
       :class="[...cellClass]"
     >
       <AppStatsHeadingTitle

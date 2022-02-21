@@ -14,7 +14,11 @@
       />
     </div>
     
-    {{ title }}
+    <div>
+      {{ title }}
+    </div>
+    
+    <div />
   </div>
 </template>
 
