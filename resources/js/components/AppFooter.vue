@@ -1,6 +1,6 @@
 <template>
-  <div class="flex flex-wrap flex-none gap-6 items-center p-6 text-zinc-100 bg-zinc-900 lg:flex-row flex-column">
-    <div class="px-6 text-xs font-bold lg:px-0 lg:ml-36 lg:text-base">
+  <div class="flex flex-wrap flex-none gap-6 items-center p-6 text-zinc-100 bg-zinc-900 lg:flex-row lg:flex-nowrap lg:pl-36 flex-column">
+    <div class="px-6 text-xs font-bold lg:shrink lg:px-0 lg:text-base">
       Государственный центр технических исследований
       {{ year }} г. | Лицензия от 10.11.2010 г.
     </div>

@@ -4,35 +4,31 @@
     
     <article
       v-if="page && !loading"
-      class="overflow-hidden grid-cols-4 gap-12 h-full bg-zinc-100 lg:grid lg:p-12"
+      class="flex overflow-hidden flex-col p-4 h-full bg-zinc-100 lg:p-12"
     >
-      <div class="">
-        <div class="p-4 lg:p-0">
-          <AppPageTitle
-            :title="page.title"
-            class="mb-0 lg:mb-12"
-          />
-        </div>
-        
+      <div class="flex-none lg:mb-12">
+        <AppPageTitle
+          :title="page.title"
+        />
+      </div>
+  
+      <div class="grow shrink-0 gap-12 prose-sm lg:columns-2 lg:max-w-full lg:prose 2xl:columns-3 columns-fill-auto">
         <div
           v-if="page.image"
-          class="lg:mb-12"
+          class=""
         >
           <img
+            class="!mt-0"
             :src="'/storage/' + page.image"
             alt=""
           >
         </div>
-      </div>
-      
-      <div class="p-4 h-full lg:col-span-3 lg:p-0">
-        <div class="gap-12 h-full prose-sm lg:columns-3 lg:max-w-full lg:prose columns-fill-auto">
-          <p v-if="page.excerpt">
-            {{ page.excerpt }}
-          </p>
-          
-          <span v-html="page.content" />
-        </div>
+    
+        <p v-if="page.excerpt">
+          {{ page.excerpt }}
+        </p>
+    
+        <span v-html="page.content" />
       </div>
     </article>
   </div>
@@ -107,4 +103,5 @@ watch(
 .prose p:first-child {
   margin-top: 0;
 }
+
 </style>

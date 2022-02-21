@@ -5,7 +5,7 @@
 
   <div
     v-if="news"
-    class="grid gap-10 lg:grid-cols-3"
+    class="grid gap-10 sm:grid-cols-2 md:grid-cols-3"
   >
     <router-link
       v-for="newsItem in news"
@@ -27,7 +27,7 @@
           {{ newsItem.excerpt }}
         </span>
 
-        <span class="block flex-none mt-4 text-right">
+        <span class="block flex-none pt-4 mt-auto text-right">
           <span class="block py-2 px-3 text-center text-zinc-100 bg-teal-500 rounded lg:inline-block">
             Читать
           </span>

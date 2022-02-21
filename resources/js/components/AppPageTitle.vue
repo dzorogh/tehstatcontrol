@@ -1,5 +1,5 @@
 <template>
-  <h1 class="mb-4 text-2xl font-bold lg:mb-6 lg:text-4xl">
+  <h1 class="overflow-hidden mb-4 text-2xl font-bold text-ellipsis lg:mb-6 lg:text-4xl">
     {{ title }}
   </h1>
 </template>
