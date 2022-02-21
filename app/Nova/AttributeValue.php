@@ -100,9 +100,9 @@ class AttributeValue extends Resource
                 Brand::class
             ])->sortable()->searchable(),
 
-            BelongsTo::make(__('Аттрибут'), 'attribute', Attribute::class)->hideWhenCreating()->hideWhenUpdating(),
+            BelongsTo::make(__('Атрибут'), 'attribute', Attribute::class)->hideWhenCreating()->hideWhenUpdating(),
 
-            Select::make(__('Аттрибут'), 'attribute_id')->options(function () {
+            Select::make(__('Атрибут'), 'attribute_id')->options(function () {
                 return array_filter(\App\Models\Attribute::query()
                     ->orderBy('group_id', 'desc')
                     ->orderBy('order', 'asc')

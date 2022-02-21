@@ -69,7 +69,7 @@ class Brand extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             Text::make(__('Название'), 'title')->sortable(),
-            HasMany::make(__('Аттрибуты'), 'values', AttributeValue::class)->showOnIndex(true)
+            HasMany::make(__('Атрибуты'), 'values', AttributeValue::class)->showOnIndex(true)
         ];
     }
 

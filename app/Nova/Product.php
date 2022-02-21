@@ -78,7 +78,7 @@ class Product extends Resource
             Text::make(__('Название'), 'title')->sortable(),
             BelongsTo::make(__('Бренд'), 'brand', Brand::class)->showOnIndex(true),
             BelongsTo::make(__('Категория'), 'category', Category::class)->showOnIndex(true),
-            MorphMany::make(__('Аттрибуты'), 'values', AttributeValue::class)->showOnIndex(true),
+            MorphMany::make(__('Атрибуты'), 'values', AttributeValue::class)->showOnIndex(true),
 //            Flexible::make('Аттрибуты')
 //                ->preset(\App\Nova\Flexible\Presets\ProductAttributes::class)
         ];

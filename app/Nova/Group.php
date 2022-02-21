@@ -98,7 +98,7 @@ class Group extends Resource
                 ])
                 ->rules('required'),
 
-            HasMany::make(__('Аттрибуты'), 'attributes', Attribute::class)
+            HasMany::make(__('Атрибуты'), 'attributes', Attribute::class)
         ];
     }
 

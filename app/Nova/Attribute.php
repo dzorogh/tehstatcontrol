@@ -29,7 +29,7 @@ class Attribute extends Resource
      */
     public static function label()
     {
-        return __('Аттрибуты');
+        return __('Атрибуты');
     }
 
     /**
@@ -39,7 +39,7 @@ class Attribute extends Resource
      */
     public static function singularLabel()
     {
-        return __('Аттрибут');
+        return __('Атрибут');
     }
 
     /**
