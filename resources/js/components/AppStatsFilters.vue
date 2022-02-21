@@ -112,7 +112,7 @@ const selectedFilters = reactive<RequestFilters>(props.requestFilters);
 watch(() => {
   return props.requestFilters;
 }, filters => {
-  console.log('watch: props.requestFilters', filters)
+  //console.log('watch: props.requestFilters', filters)
   assignFilters(filters);
 });
 
@@ -124,10 +124,10 @@ function getAttributeFilter(attributeId) {
 }
 
 function setAttributeFilter(attributeId, values) {
-  console.log('setAttributeFilter', {
-    attributeId,
-    values,
-  });
+  // console.log('setAttributeFilter', {
+  //   attributeId,
+  //   values,
+  // });
   
   if (!selectedFilters.attributes) {
     selectedFilters.attributes = {};
@@ -151,19 +151,19 @@ function assignFilters(newFilters: RequestFilters) {
 }
 
 function resetFilters() {
-  console.log('resetFilters', {
-    selectedFilters,
-    emptyFilters,
-  });
+  // console.log('resetFilters', {
+  //   selectedFilters,
+  //   emptyFilters,
+  // });
   
   assignFilters(emptyFilters);
   applyFilters();
 }
 
 const applyFilters = useDebounceFn(() => {
-  console.log('applyFilters', {
-    selectedFilters,
-  });
+  // console.log('applyFilters', {
+  //   selectedFilters,
+  // });
   
   emit('update:filters', selectedFilters);
 }, 1000)

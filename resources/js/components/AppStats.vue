@@ -171,7 +171,7 @@ function updateSort(sort: Sort) {
   requestParams.sort = sort;
   requestParams.page = 1;
   
-  console.log('handleSort', sort);
+  //console.log('handleSort', sort);
   
   getList();
 }
@@ -189,7 +189,7 @@ watch(() => route.params.group, async (newGroupSlug) => {
       await getList();
       
     } catch (error) {
-      console.log(error);
+      //console.log(error);
     }
     
     selectedChartTabIndex.value = 0;

@@ -124,12 +124,12 @@ function handleMouseLeave() {
 }
 
 function openMenu() {
-  console.log('openMenu', menuOpen)
+  //console.log('openMenu', menuOpen)
   store.menuOpen = true;
 }
 
 function closeMenu() {
-  console.log('closeMenu', menuOpen)
+  //console.log('closeMenu', menuOpen)
   store.menuOpen = false;
 }
 

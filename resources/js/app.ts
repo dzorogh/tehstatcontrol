@@ -35,10 +35,10 @@ router.afterEach((to) => {
   
   if (window.ym) {
     if (email) {
-      console.log('[metrika: userParams]', store.metrikaId, {
-        email: email,
-        // UserID: email
-      });
+      // console.log('[metrika: userParams]', store.metrikaId, {
+      //   email: email,
+      //   // UserID: email
+      // });
       
       window.ym(store.metrikaId, 'userParams', {
         email: email,
@@ -46,7 +46,7 @@ router.afterEach((to) => {
       });
     }
     
-    console.log('[metrika: hit]', store.metrikaId, to.path);
+    //console.log('[metrika: hit]', store.metrikaId, to.path);
     window.ym(store.metrikaId, 'hit', to.path);
   }
 });
