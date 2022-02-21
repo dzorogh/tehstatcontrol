@@ -21,6 +21,7 @@ class Attribute extends Resource
 {
     public static $group = 'Статистика';
     public static int $order = 3;
+
     /**
      * Get the displayable label of the resource.
      *
@@ -85,6 +86,9 @@ class Attribute extends Resource
             ID::make(__('ID'), 'id')->sortable(),
             Text::make(__('Название'), 'title')
                 ->rules('required'),
+
+            Text::make(__('Описание'), 'description')
+                ->nullable(),
 
             BelongsTo::make(__('Группа данных'), 'group', Group::class)
                 ->nullable()

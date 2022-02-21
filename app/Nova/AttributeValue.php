@@ -135,6 +135,7 @@ class AttributeValue extends Resource
             Textarea::make(__('Значение'), 'value')
                 ->sortable()
                 ->alwaysShow()
+                ->showOnIndex()
                 ->help(
                     (function () {
 
