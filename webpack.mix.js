@@ -12,5 +12,5 @@ mix.ts('resources/js/app.ts', 'public/js')
     require('tailwindcss'),
   ])
   .sourceMaps()
-  .version()
-  .extract(['vue']);
+  .extract(['vue'])
+  .version();
