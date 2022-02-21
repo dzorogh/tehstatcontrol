@@ -88,7 +88,9 @@ class Attribute extends Resource
                 ->rules('required'),
 
             Text::make(__('Описание'), 'description')
-                ->nullable(),
+                ->nullable()
+                ->hideFromIndex()
+            ,
 
             BelongsTo::make(__('Группа данных'), 'group', Group::class)
                 ->nullable()
