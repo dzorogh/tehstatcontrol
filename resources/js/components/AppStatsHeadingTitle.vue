@@ -1,9 +1,11 @@
 <template>
   <div
     class="flex flex-row gap-3 items-center "
-    @click="handleSort"
   >
-    <div class="group flex flex-row gap-3 items-center cursor-pointer">
+    <div
+      class="group flex flex-row gap-3 items-center cursor-pointer"
+      @click="handleSort"
+    >
       <div class="">
         <ChevronUpIcon
           class="-mb-1 w-4 h-4 group-hover:scale-150"
@@ -14,7 +16,7 @@
           :class="{'fill-teal-300': sorted === 'asc'}"
         />
       </div>
-  
+      
       <div>
         {{ title }}
       </div>
