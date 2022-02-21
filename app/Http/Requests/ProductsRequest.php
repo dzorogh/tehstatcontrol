@@ -81,9 +81,12 @@ class ProductsRequest extends FormRequest
                 'array',
                 'nullable',
             ],
-            'filters.attributes.*' => [
-                'min:1'
-            ],
+
+// removed because of rare errors when changing filter when loading not finished
+//            'filters.attributes.*' => [
+//                'min:1'
+//            ],
+
             'filters.attributesIds.*' => [
                 'integer',
                 Rule::exists((new Attribute())->getTable(), 'id')
