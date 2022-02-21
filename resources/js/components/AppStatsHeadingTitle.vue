@@ -28,9 +28,9 @@
           class="w-5 h-5 "
         />
         <div
-          class="hidden group-hover:block overflow-hidden absolute top-0 right-0 -left-48 z-50 p-5 max-h-64 text-sm text-zinc-100 bg-zinc-800 rounded shadow-lg"
+          class="hidden group-hover:block overflow-hidden absolute top-0 right-0 -left-64 z-50 p-5 max-h-64 text-sm text-zinc-100 bg-zinc-800 rounded shadow-lg"
         >
-          {{ description }}
+          {{ title }}: <span class="font-normal">{{ lowerCaseFirstLetter(description) }}</span>
         </div>
       </div>
     </div>
@@ -54,6 +54,10 @@ const emit = defineEmits<{
 
 function handleSort() {
   emit('toggleSort', props.sorted === 'asc' ? 'desc' : 'asc');
+}
+
+function lowerCaseFirstLetter(string) {
+  return string.charAt(0).toLowerCase() + string.slice(1);
 }
 
 </script>
