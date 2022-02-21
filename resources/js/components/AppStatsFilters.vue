@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex flex-row flex-wrap gap-4 mb-4">
-      <div class="grow">
+      <div class="basis-full lg:basis-auto">
         <AppSelect
           v-model="selectedFilters.yearId"
           :options="availableFilters.years"
@@ -12,7 +12,7 @@
           @change="applyFilters"
         />
       </div>
-      <div class="grow">
+      <div class="basis-full lg:basis-auto">
         <AppSelect
           v-model="selectedFilters.categoryId"
           :options="availableFilters.categories"
@@ -23,7 +23,7 @@
           @change="applyFilters"
         />
       </div>
-      <div class="grow">
+      <div class="basis-full lg:basis-auto">
         <AppSelect
           v-model="selectedFilters.brandsIds"
           :options="availableFilters.brands"
@@ -43,7 +43,7 @@
       <div
         v-for="attribute in sortedFilterAttributes"
         :key="attribute.id"
-        class="grow"
+        class="basis-full lg:basis-auto"
       >
         <AppSelect
           :model-value="getAttributeFilter(attribute.id)"
