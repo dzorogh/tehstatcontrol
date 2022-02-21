@@ -14,8 +14,7 @@
   
       <a
         :href="'https://crm.globaldrive.ru/my.globaldrive.ru.php?return=' + redirectTo"
-        type="submit"
-        class="inline-block flex-none py-3 px-6 text-lg font-bold text-zinc-100 bg-cyan-600 hover:bg-cyan-500 rounded"
+        class="block flex-none py-3 px-6 text-lg font-bold text-zinc-100 bg-cyan-600 hover:bg-cyan-500 rounded"
       >
         Войти с помощью Битрикс24
       </a>
