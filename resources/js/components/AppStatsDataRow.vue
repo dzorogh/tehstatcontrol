@@ -20,7 +20,7 @@
       :class="[...cellClass]"
     >
       <div
-        class="hover:line-clamp-none lg:line-clamp-2"
+        class="min-w-[15rem] hover:line-clamp-none lg:line-clamp-2"
       >
         {{ product.title }}
       </div>

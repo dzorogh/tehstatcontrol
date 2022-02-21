@@ -92,8 +92,11 @@ class Attribute extends Resource
                 ->hideFromIndex(),
 
             Boolean::make(__('Описание'), 'description')
-                ->default(false)
-                ->showOnIndex(),
+                ->showOnIndex()
+                ->hideFromDetail()
+                ->hideWhenCreating()
+                ->hideWhenUpdating()
+            ,
 
             BelongsTo::make(__('Группа данных'), 'group', Group::class)
                 ->nullable()

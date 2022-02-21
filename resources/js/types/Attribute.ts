@@ -8,4 +8,5 @@ export interface Attribute {
   title: string;
   values: Array<Value>;
   dataType: DataType;
+  description: string
 }

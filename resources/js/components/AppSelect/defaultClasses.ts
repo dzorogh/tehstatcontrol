@@ -28,7 +28,7 @@ export default {
     'grow', 'text-center', 'text-xs',
   ],
   labelCounterIcon: ['w-3', 'h-3', 'rounded-full', 'ml-2', 'bg-emerald-800'],
-  labelChevronIcon: ['flex-none', 'w-6', 'transition-transform', 'ml-2'],
+  labelChevronIcon: ['flex-none', 'w-6', 'h-6', 'transition-transform', 'ml-2'],
   labelChevronIconOpen: ['rotate-180'],
   dropdown: [
     'absolute',

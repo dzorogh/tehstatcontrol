@@ -42,6 +42,7 @@
       <AppStatsHeadingTitle
         :sorted="sort.type === 'attribute' && sort.attributeId === attribute.id ? sort.direction : false"
         :title="attribute.title"
+        :description="attribute.description"
         @toggle-sort="emit('changeSort', {type: 'attribute', attributeId: attribute.id, direction: $event})"
       />
     </th>

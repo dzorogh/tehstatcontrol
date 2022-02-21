@@ -27,6 +27,7 @@ namespace App\Models{
  * @property int $sortable
  * @property int|null $order
  * @property int|null $group_id
+ * @property string|null $description
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Category[] $category
  * @property-read int|null $category_count
  * @property-read \App\Models\Group|null $group
@@ -38,6 +39,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereByYear($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereDataType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereFilterable($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereGroupId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Attribute whereId($value)

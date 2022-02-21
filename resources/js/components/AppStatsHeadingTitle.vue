@@ -1,43 +1,57 @@
 <template>
   <div
-    class="group flex flex-row gap-3 items-center cursor-pointer"
+    class="flex flex-row gap-3 items-center "
     @click="handleSort"
   >
-    <div class="">
-      <ChevronUpIcon
-        class="-mb-1 w-4 h-4 group-hover:scale-150"
-        :class="{'fill-teal-300': sorted === 'desc'}"
-      />
-      <ChevronDownIcon
-        class="-mt-1 w-4 h-4 group-hover:scale-150"
-        :class="{'fill-teal-300': sorted === 'asc'}"
-      />
+    <div class="group flex flex-row gap-3 items-center cursor-pointer">
+      <div class="">
+        <ChevronUpIcon
+          class="-mb-1 w-4 h-4 group-hover:scale-150"
+          :class="{'fill-teal-300': sorted === 'desc'}"
+        />
+        <ChevronDownIcon
+          class="-mt-1 w-4 h-4 group-hover:scale-150"
+          :class="{'fill-teal-300': sorted === 'asc'}"
+        />
+      </div>
+  
+      <div>
+        {{ title }}
+      </div>
     </div>
     
-    <div>
-      {{ title }}
+    <div v-if="description">
+      <div class="group relative cursor-help">
+        <QuestionMarkCircleIcon
+          class="w-5 h-5 "
+        />
+        <div
+          class="hidden group-hover:block overflow-hidden absolute -inset-x-20 top-0 z-50 p-5 max-h-64 text-sm text-zinc-100 bg-zinc-800 rounded shadow-lg"
+        >
+          {{ description }}
+        </div>
+      </div>
     </div>
-    
-    <div />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/vue/outline';
+import { ChevronDownIcon, ChevronUpIcon, QuestionMarkCircleIcon } from '@heroicons/vue/outline';
 import { Attribute } from '../types/Attribute';
 import { Sort } from '../types/Sort';
 
 const props = defineProps<{
   title: string
   sorted: false | 'asc' | 'desc'
+  description?: Attribute['description']
 }>();
 
 const emit = defineEmits<{
   (e: 'toggleSort', direction: Sort['direction']): void
-}>()
+}>();
 
 function handleSort() {
-  emit('toggleSort', props.sorted === 'asc' ? 'desc' : 'asc')
+  emit('toggleSort', props.sorted === 'asc' ? 'desc' : 'asc');
 }
 
 </script>
