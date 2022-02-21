@@ -135,9 +135,9 @@ class Attribute extends Resource
                 ->nullable()
                 ->sortable(),
 
-            Boolean::make(__('Возможна сортировка'), 'sortable')
+            /*Boolean::make(__('Возможна сортировка'), 'sortable')
                 ->nullable()
-                ->default(true),
+                ->default(true),*/
         ];
     }
 
