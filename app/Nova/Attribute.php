@@ -91,6 +91,10 @@ class Attribute extends Resource
                 ->nullable()
                 ->hideFromIndex(),
 
+            Boolean::make(__('Описание'), 'description')
+                ->default(false)
+                ->showOnIndex(),
+
             BelongsTo::make(__('Группа данных'), 'group', Group::class)
                 ->nullable()
                 ->sortable(),
