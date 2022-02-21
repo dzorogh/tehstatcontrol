@@ -28,7 +28,7 @@
           class="w-5 h-5 "
         />
         <div
-          class="hidden group-hover:block overflow-hidden absolute -inset-x-20 top-0 z-50 p-5 max-h-64 text-sm text-zinc-100 bg-zinc-800 rounded shadow-lg"
+          class="hidden group-hover:block overflow-hidden absolute top-0 right-0 -left-48 z-50 p-5 max-h-64 text-sm text-zinc-100 bg-zinc-800 rounded shadow-lg"
         >
           {{ description }}
         </div>
