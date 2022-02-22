@@ -100,6 +100,10 @@ function getAttributeValue(product: Product, attribute: Attribute) {
 }
 
 function getCountryName(code) {
+  if (!code) {
+    return '';
+  }
+  
   return new Intl.DisplayNames(['ru'], { type: 'region' }).of(code);
 }
 
