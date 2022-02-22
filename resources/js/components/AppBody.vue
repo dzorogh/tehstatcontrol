@@ -4,7 +4,7 @@
   
   <div class="flex flex-col h-full">
     <div
-      class="flex flex-col grow pt-20 pr-4 pb-4 pl-16 lg:pt-32 lg:pr-8 lg:pb-8 lg:pl-28"
+      class="flex flex-col grow px-4 pt-16 pb-4 lg:pt-32 lg:pr-8 lg:pb-8 lg:pl-28"
       @click="closeMenu()"
     >
       <router-view />

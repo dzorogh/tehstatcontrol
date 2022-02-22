@@ -1,10 +1,22 @@
 <template>
-  <div class="flex fixed inset-x-0 top-0 z-30 flex-row items-center py-2 px-3 h-16 text-zinc-100 bg-zinc-900 lg:py-4 lg:px-6 lg:h-24">
+  <div class="flex fixed inset-x-0 top-0 z-30 flex-row items-center py-2 h-10 text-zinc-100 bg-zinc-900 lg:py-4 lg:px-6 lg:h-24">
+    <div class="p-2 mr-4 lg:hidden">
+      <a
+        href=""
+        @click.prevent="toggleMenu"
+      >
+        <MenuIcon
+          class="w-8 h-8"
+          :class="{'text-teal-300': store.menuOpen}"
+        />
+      </a>
+    </div>
+    
     <div class="flex-none lg:-mt-3 lg:w-auto">
       <router-link to="/">
         <img
           src="/images/logo-tsc.svg"
-          class="w-14 h-10 lg:w-28 lg:h-20"
+          class="w-12 h-8 lg:w-28 lg:h-20"
           alt="ГЦТИ"
         >
       </router-link>
@@ -41,18 +53,6 @@
       >
         Контакты
       </router-link>
-    </div>
-    
-    <div class="p-2 ml-auto lg:hidden">
-      <a
-        href=""
-        @click.prevent="toggleMenu"
-      >
-        <MenuIcon
-          class="w-8 h-8"
-          :class="{'text-teal-300': store.menuOpen}"
-        />
-      </a>
     </div>
   </div>
 </template>
