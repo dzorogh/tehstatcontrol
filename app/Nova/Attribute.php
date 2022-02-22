@@ -131,6 +131,9 @@ class Attribute extends Resource
             Boolean::make(__('Показывать на графике'), 'show_on_chart')
                 ->default(false),
 
+            Boolean::make(__('Показывать фильтр'), 'show_filter')
+                ->default(true),
+
             Number::make(__('Порядок'), 'order')
                 ->nullable()
                 ->sortable(),

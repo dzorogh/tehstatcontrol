@@ -183,6 +183,9 @@ class StatsController extends Controller
             $item->setRelation('values', $attributesValues->where('attribute_id', $item->id));
         });
 
+        // remove comment attributes and hidden
+        $attributes = $attributes->where('data_type', '!=', 'comment')->where('show_filter', '=', true);
+
         // List of visible columns
         $dynamicColumns = collect();
 
@@ -214,7 +217,7 @@ class StatsController extends Controller
                 'brands' => BrandResource::collection($brands),
                 'categories' => CategoryResource::collection($categories),
                 'years' => YearResource::collection($years),
-                'attributes' => AttributeResource::collection($attributes->where('data_type', '!=', 'comment')),
+                'attributes' => AttributeResource::collection($attributes),
             ],
             // TODO: Remove not-actual filters from request filters???
             'requestFilters' => $requestFilters->all(),
