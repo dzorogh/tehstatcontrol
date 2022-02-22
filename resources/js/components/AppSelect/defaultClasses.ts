@@ -1,7 +1,11 @@
 import { Classes } from './Classes';
 
 export default {
-  root: ['relative', 'select-none', 'text-sm'],
+  root: [
+    'relative',
+    'select-none',
+    'text-sm'
+  ],
   label: [
     'px-2',
     'py-1',
@@ -12,8 +16,14 @@ export default {
     'content-center',
     'cursor-pointer',
   ],
-  labelTitle: ['grow', 'font-bold', 'flex', 'items-center'],
+  labelTitle: [
+    'grow',
+    'font-bold',
+    'flex',
+    'items-center'
+  ],
   labelCounter: [
+    'flex-none',
     'bg-teal-600',
     'text-zinc-100',
     'rounded-full',
@@ -25,12 +35,35 @@ export default {
     'content-center',
   ],
   labelCounterNumber: [
-    'grow', 'text-center', 'text-xs',
+    'grow',
+    'text-center',
+    'text-xs',
   ],
-  labelCounterIcon: ['w-3', 'h-3', 'rounded-full', 'ml-2', 'bg-emerald-800'],
-  labelChevronIcon: ['flex-none', 'w-6', 'h-6', 'transition-transform', 'ml-2'],
-  labelChevronIconOpen: ['rotate-180'],
-  labelLoadingIcon: ['flex-none', 'w-6', 'h-6', 'ml-2', 'text-zinc-800', 'animate-spin'],
+  labelCounterIcon: [
+    'w-3',
+    'h-3',
+    'rounded-full',
+    'ml-2',
+    'bg-emerald-800'
+  ],
+  labelChevronIcon: [
+    'flex-none',
+    'w-6',
+    'h-6',
+    'transition-transform',
+    'ml-2'
+  ],
+  labelChevronIconOpen: [
+    'rotate-180'
+  ],
+  labelLoadingIcon: [
+    'flex-none',
+    'w-6',
+    'h-6',
+    'ml-2',
+    'text-zinc-800',
+    'animate-spin'
+  ],
   dropdown: [
     'absolute',
     'bg-zinc-200',
@@ -44,7 +77,10 @@ export default {
     'z-10',
     'max-h-[50vh]',
   ],
-  options: ['divide-y', 'divide-zinc-100'],
+  options: [
+    'divide-y',
+    'divide-zinc-100'
+  ],
   option: [
     'px-2',
     'py-1',
@@ -54,7 +90,9 @@ export default {
     'items-center',
     'hover:bg-zinc-100',
   ],
-  optionLabel: ['grow'],
+  optionLabel: [
+    'grow'
+  ],
   optionIcon: [
     'w-6',
     'h-6',
