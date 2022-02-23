@@ -18,5 +18,5 @@ export interface List {
     brands: string[]
     values: number[]
   }[];
-  sort: Sort;
+  requestSort: Sort;
 }

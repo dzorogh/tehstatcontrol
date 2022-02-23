@@ -17,6 +17,7 @@ use App\Models\Category;
 use App\Models\Year;
 use App\Stats\Brands;
 use App\Stats\Categories;
+use App\Stats\ProductsQuery;
 use App\Stats\RequestFilters;
 use App\Stats\Sort;
 use App\Stats\StatsByBrand;
@@ -43,46 +44,14 @@ class StatsController extends Controller
 
     public function products(ProductsRequest $request): AnonymousResourceCollection
     {
-        $validated = $request->validated();
 
-        $requestFilters = new RequestFilters();
-        $requestFilters->setBrands($request->validated('filters.brandsIds'));
-        $requestFilters->setCategory($request->validated('filters.categoryId'));
-        $requestFilters->setAttributes($request->validated('filters.attributes'));
-        $requestFilters->setYear($request->validated('filters.yearId', Year::query()->orderByDesc('value')->first()->id));
-
-        if ($request->input('filters.groupSlug')) {
-            $groupId = Group::whereSlug($request->validated('filters.groupSlug'))->first()->id;
-        } elseif ($request->validated('filters.groupId')) {
-            $groupId = $request->validated('filters.groupId');
-        } else {
-            $groupId = Group::query()->first()->id;
-        }
-
-        $requestFilters->setGroup($groupId);
-
-        $sort = [
-            'type' => $request->validated('sort.type', 'title'),
-            'direction' => $request->validated('sort.direction', 'asc'),
-            'attributeId' => $request->validated('sort.attributeId', null),
-        ];
+        $requestFilters = new RequestFilters($request);
+        $requestSort = new Sort($request);
 
         // Base products list
 
-        /** @var Product|Builder $productsQuery */
-        $productsQuery = Product::with([
-            'brand.values',
-            'category',
-            'values.attribute.group',
-            'values.year',
-        ]);
-
-        // Filter products by all request params
-        $productsQuery->byBrands($requestFilters->brands);
-        $productsQuery->byCategory($requestFilters->categoryId);
-        $productsQuery->byYear($requestFilters->yearId);
-        $productsQuery->byAttributes($requestFilters->attributes);
-
+        $products = new ProductsQuery();
+        $products->filter($requestFilters);
 
         // Next - available params for each filter,
         // list of params must be filtered by products filtered by all other params except the param itself
@@ -206,13 +175,17 @@ class StatsController extends Controller
         }
 
         // Stats by brand
-        $chart = new StatsByBrand($productsQuery, $requestFilters->groupId, $requestFilters->yearId);
+        $chart = new StatsByBrand($products->getQuery(), $requestFilters->groupId, $requestFilters->yearId);
         $chart = $chart->get();
 
-        $sorting = new Sort($productsQuery);
-        $sorting->apply($sort['type'], $sort['direction'], $sort['attributeId']);
+        // Sort in the end, because chart data will be grouped without sorting columns
+        $products->sort($requestSort);
 
-        return ProductResource::collection($productsQuery->paginate())->additional([
+        return ProductResource::collection($products->paginate())->additional([
+            // incoming
+            'requestFilters' => $requestFilters->all(),
+            'requestSort' => $requestSort->all(),
+
             'availableFilters' => [
                 'brands' => BrandResource::collection($brands),
                 'categories' => CategoryResource::collection($categories),
@@ -220,10 +193,9 @@ class StatsController extends Controller
                 'attributes' => AttributeResource::collection($attributes),
             ],
             // TODO: Remove not-actual filters from request filters???
-            'requestFilters' => $requestFilters->all(),
+
             'dynamicColumns' => AttributeResource::collection($dynamicColumns),
             'chart' => $chart,
-            'sort' => $sort
         ]);
     }
 }

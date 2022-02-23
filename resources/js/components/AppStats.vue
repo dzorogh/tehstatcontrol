@@ -49,7 +49,7 @@
                 <AppStatsHeadingRow
                   :cell-class="cellClass"
                   :columns="sortedColumns"
-                  :sort="list.sort"
+                  :sort="list.requestSort"
                   @change-sort="updateSort"
                 />
               </thead>
