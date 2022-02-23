@@ -2,6 +2,9 @@
 
 namespace App\Stats;
 
+use App\Http\Requests\ProductsRequest;
+use App\Models\Group;
+use App\Models\Year;
 use JetBrains\PhpStorm\ArrayShape;
 
 class RequestFilters
@@ -30,6 +33,24 @@ class RequestFilters
      * @var array|null
      */
     public ?array $attributes = [];
+
+    public function __construct(ProductsRequest $request)
+    {
+        $this->setBrands($request->validated('filters.brandsIds'));
+        $this->setCategory($request->validated('filters.categoryId'));
+        $this->setAttributes($request->validated('filters.attributes'));
+        $this->setYear($request->validated('filters.yearId', Year::query()->orderByDesc('value')->first()->id));
+
+        if ($request->input('filters.groupSlug')) {
+            $groupId = Group::whereSlug($request->validated('filters.groupSlug'))->first()->id;
+        } elseif ($request->validated('filters.groupId')) {
+            $groupId = $request->validated('filters.groupId');
+        } else {
+            $groupId = Group::query()->first()->id;
+        }
+
+        $this->setGroup($groupId);
+    }
 
     public function setBrands(array $brands = null)
     {

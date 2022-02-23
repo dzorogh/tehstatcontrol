@@ -2,6 +2,7 @@
 
 namespace App\Stats;
 
+use App\Http\Requests\ProductsRequest;
 use App\Models\AttributeValue;
 use App\Models\Brand;
 use App\Models\Category;
@@ -12,68 +13,60 @@ class Sort
 {
     private Builder $query;
 
-    /**
-     * @param Builder $query
-     */
-    function __construct(Builder &$query)
+    private string $type;
+    private string $direction;
+    private ?int $attributeId;
+
+    function __construct(ProductsRequest $request)
+    {
+        $this->type = $request->validated('sort.type', 'title');
+        $this->direction = $request->validated('sort.direction', 'asc');
+        $this->attributeId = $request->validated('sort.attribute', null);
+    }
+
+    public function apply(Builder &$query)
     {
         $this->query = $query;
+
+        if ($this->type === 'title') {
+            $this->sortByTitle();
+        }
+
+        if ($this->type === 'brand') {
+            $this->sortByBrand();
+        }
+
+        if ($this->type === 'category') {
+            $this->sortByCategory();
+        }
+
+        if ($this->type === 'attribute') {
+            $this->sortByAttribute();
+        }
     }
 
-    /**
-     * @param string $type 'title' | 'attribute' | 'brand' | 'category'
-     * @param string $direction 'asc' | 'desc'
-     * @param int|null $attributeId
-     */
-    public function apply(string $type, string $direction, int $attributeId = null)
+    private function sortByTitle()
     {
-        if ($type === 'title') {
-            $this->sortByTitle($direction);
-        }
-
-        if ($type === 'brand') {
-            $this->sortByBrand($direction);
-        }
-
-        if ($type === 'category') {
-            $this->sortByCategory($direction);
-        }
-
-        if ($type === 'attribute') {
-            $this->sortByAttribute($direction, $attributeId);
-        }
+        $this->query->orderBy('title', $this->direction);
     }
 
-    /**
-     * @param string $direction
-     */
-    private function sortByTitle(string $direction)
-    {
-        $this->query->orderBy('title', $direction);
-    }
-
-    /**
-     * @param string $direction
-     */
-    private function sortByBrand(string $direction)
+    private function sortByBrand()
     {
         $this->query->orderBy(
             Brand::select('title')
                 ->whereColumn('stats_products.brand_id', 'stats_brands.id')
                 ->limit(1),
-            $direction);
+            $this->direction);
     }
 
-    /**
-     * @param string $direction
-     */
-    private function sortByCategory(string $direction)
+
+    private function sortByCategory()
     {
         $this->query->orderBy(
             Category::select('title')
                 ->whereColumn('stats_products.category_id', 'stats_categories.id')
                 ->limit(1),
-            $direction);
+            $this->direction);
     }
 
     /**
@@ -83,16 +76,16 @@ class Sort
      * @param string $direction
      * @param $attributeId
      */
-    private function sortByAttribute(string $direction, $attributeId)
+    private function sortByAttribute()
     {
         $this->query->orderBy(
         // 1
             AttributeValue::select(DB::raw('value * 1'))
                 ->where('attributable_type', 'product')
                 ->whereColumn('stats_products.id', 'attributable_id')
-                ->where('attribute_id', $attributeId)
+                ->where('attribute_id', $this->attributeId)
                 ->limit(1),
-            $direction
+            $this->direction
         );
 
         $this->query->orderBy(
@@ -100,9 +93,17 @@ class Sort
             AttributeValue::select('value')
                 ->where('attributable_type', 'product')
                 ->whereColumn('stats_products.id', 'attributable_id')
-                ->where('attribute_id', $attributeId)
+                ->where('attribute_id', $this->attributeId)
                 ->limit(1),
-            $direction
+            $this->direction
         );
+    }
+
+    public function all() {
+        return [
+            'type' => $this->type,
+            'direction' => $this->direction,
+            'attributeId' => $this->attributeId
+        ];
     }
 }
