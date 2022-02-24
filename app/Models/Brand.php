@@ -28,4 +28,11 @@ class Brand extends Model
     {
         return $this->morphMany(AttributeValue::class, 'attributable');
     }
+
+    protected static function booted()
+    {
+        static::deleting(function (Product $product) {
+            $product->values()->delete();
+        });
+    }
 }
