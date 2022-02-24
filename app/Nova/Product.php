@@ -2,6 +2,8 @@
 
 namespace App\Nova;
 
+use App\Nova\Filters\ByBrand;
+use App\Nova\Filters\ByCategory;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\HasMany;
@@ -105,7 +107,10 @@ class Product extends Resource
      */
     public function filters(Request $request)
     {
-        return [];
+        return [
+            new ByBrand,
+            new ByCategory,
+        ];
     }
 
     /**
