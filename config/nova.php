@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\LogoutNovaUser;
 use Laravel\Nova\Actions\ActionResource;
 use Laravel\Nova\Http\Middleware\Authenticate;
 use Laravel\Nova\Http\Middleware\Authorize;
@@ -100,6 +101,7 @@ return [
     'middleware' => [
         'web',
         Authenticate::class,
+        LogoutNovaUser::class,
         DispatchServingNovaEvent::class,
         BootTools::class,
         Authorize::class,
