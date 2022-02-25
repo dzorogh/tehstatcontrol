@@ -106,13 +106,15 @@ function getCountryName(code) {
     return '';
   }
   
+  const codeTrimmed = code.trim();
+  
   try {
-    return new Intl.DisplayNames(['ru'], { type: 'region' }).of(code);
+    return new Intl.DisplayNames(['ru'], { type: 'region' }).of(codeTrimmed);
   } catch (e) {
     console.log(e);
   }
   
-  return code;
+  return codeTrimmed;
 }
 
 </script>
