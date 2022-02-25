@@ -59,7 +59,15 @@ function formatNumber(value) {
 }
 
 function formatCountry(value) {
-  return new Intl.DisplayNames(['ru'], {type: 'region'}).of(value);
+  const valueTrimmed = value.trim();
+  
+  try {
+    return new Intl.DisplayNames(['ru'], {type: 'region'}).of(valueTrimmed);
+  } catch (e) {
+    console.log(e)
+  }
+  
+  return valueTrimmed;
 }
 
 function formatDataType(dataType: DataType, value) {
