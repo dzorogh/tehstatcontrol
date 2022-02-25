@@ -33,7 +33,7 @@ class AttributeValue extends Resource
      */
     public static function label()
     {
-        return __('Значения аттрибутов');
+        return __('Значения атрибутов');
     }
 
     /**
@@ -43,7 +43,7 @@ class AttributeValue extends Resource
      */
     public static function singularLabel()
     {
-        return __('Значение аттрибута');
+        return __('Значение атрибута');
     }
 
     /**
