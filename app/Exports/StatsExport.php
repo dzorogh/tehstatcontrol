@@ -75,7 +75,7 @@ class StatsExport implements FromQuery, ShouldAutoSize, WithMapping, WithHeading
             $sheet->getColumnDimension($key)->setWidth(20);
         }
 
-        $sheet->setTitle('Товары и аттрибуты');
+        $sheet->setTitle('Товары и атрибуты');
     }
 
     public function headings(): array

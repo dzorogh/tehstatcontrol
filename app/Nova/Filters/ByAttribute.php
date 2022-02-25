@@ -8,7 +8,7 @@ use Laravel\Nova\Filters\Filter;
 
 class ByAttribute extends Filter
 {
-    public $name = 'Фильтр по аттрибуту';
+    public $name = 'Фильтр по атрибуту';
 
     /**
      * The filter's component.
