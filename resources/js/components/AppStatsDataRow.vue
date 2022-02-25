@@ -44,7 +44,9 @@
         />
         
         <span>
-          {{ getCountryName(getAttributeValue(product, attribute).toString()) }}
+          {{ getCountryName(getAttributeValue(product, attribute)
+            .toString())
+          }}
         </span>
       </div>
       
@@ -104,7 +106,13 @@ function getCountryName(code) {
     return '';
   }
   
-  return new Intl.DisplayNames(['ru'], { type: 'region' }).of(code);
+  try {
+    return new Intl.DisplayNames(['ru'], { type: 'region' }).of(code);
+  } catch (e) {
+    console.log(e);
+  }
+  
+  return code;
 }
 
 </script>
