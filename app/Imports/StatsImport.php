@@ -50,6 +50,7 @@ class StatsImport implements WithEvents, OnEachRow, WithHeadingRow, WithChunkRea
             $attributes = [];
 
             foreach ($row as $columnIndex => $columnValue) {
+                $columnValue = trim($columnValue);
 //                Log::info('Column', ['columnIndex' => $columnIndex, 'columnValue' => $columnValue]);
 
                 if ($columnIndex === 'product.id') {
