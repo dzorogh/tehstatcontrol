@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
@@ -69,7 +70,11 @@ class Brand extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
             Text::make(__('Название'), 'title')->sortable(),
-            HasMany::make(__('Атрибуты'), 'values', AttributeValue::class)->showOnIndex(true)
+            HasMany::make(__('Атрибуты'), 'values', AttributeValue::class)->showOnIndex(true),
+
+            Number::make(__('Порядок'), 'order')
+                ->nullable()
+                ->sortable(),
         ];
     }
 
@@ -129,7 +134,7 @@ class Brand extends Resource
         return $query->when(empty($request->get('orderByDirection')), function (Builder $query) {
             $query->getQuery()->orders = [];
 
-            return $query->orderBy('title');
+            return $query->orderBy('order')->orderBy('title');
         });
     }
 }

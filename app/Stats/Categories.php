@@ -30,6 +30,8 @@ class Categories
 
                 // Do not filter categories by selected category
             })
+            ->orderBy('order')
+            ->orderBy('title')
             ->get();
     }
 }

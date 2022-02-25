@@ -30,6 +30,7 @@ class Brands
 
                 // Do not filter brands by selected brand
             })
+            ->orderBy('order')
             ->orderBy('title')
             ->get();
     }
