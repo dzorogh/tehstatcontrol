@@ -21,7 +21,7 @@ class Sort
     {
         $this->type = $request->validated('sort.type', 'title');
         $this->direction = $request->validated('sort.direction', 'asc');
-        $this->attributeId = $request->validated('sort.attribute', null);
+        $this->attributeId = $request->validated('sort.attributeId', null);
     }
 
     public function apply(Builder &$query)
