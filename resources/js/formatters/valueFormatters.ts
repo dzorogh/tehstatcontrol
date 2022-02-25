@@ -61,13 +61,15 @@ function formatNumber(value) {
 function formatCountry(value) {
   const valueTrimmed = value.trim();
   
-  try {
-    return new Intl.DisplayNames(['ru'], {type: 'region'}).of(valueTrimmed);
-  } catch (e) {
-    console.log(e)
+  if (valueTrimmed) {
+    try {
+      return new Intl.DisplayNames(['ru'], {type: 'region'}).of(valueTrimmed);
+    } catch (e) {
+      console.log(e)
+    }
   }
   
-  return valueTrimmed;
+  return value;
 }
 
 function formatDataType(dataType: DataType, value) {
