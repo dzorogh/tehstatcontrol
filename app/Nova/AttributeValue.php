@@ -79,7 +79,7 @@ class AttributeValue extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'value',
     ];
 
     public static $perPageViaRelationship = 50;
