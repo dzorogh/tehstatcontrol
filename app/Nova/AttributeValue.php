@@ -164,7 +164,8 @@ class AttributeValue extends Resource
     public function filters(Request $request)
     {
         return [
-            new Filters\ByAttribute
+            new Filters\ByAttribute,
+            new Filters\ByYear
         ];
     }
 
