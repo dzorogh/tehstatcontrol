@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Product;
-use App\Stats\Brands;
+use App\Stats\AttributeValueQuery;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Relation::morphMap([
             'product' => Product::class,
-            'brand' => Brands::class,
+            'brand' => AttributeValueQuery::class,
         ]);
     }
 }

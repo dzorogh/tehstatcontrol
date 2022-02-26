@@ -5,12 +5,14 @@ namespace App\Stats;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder;
 
-class ProductsQuery
+class ProductsQuery extends Query implements SubQuery
 {
-    private Builder $query;
-
+    /**
+     *  Base products list
+     */
     public function __construct()
     {
+
         /** @var Product|Builder $productsQuery */
         $this->query = Product::with([
             'brand.values',
@@ -18,14 +20,18 @@ class ProductsQuery
             'values.attribute.group',
             'values.year',
         ]);
+
     }
 
-    public function filter(RequestFilters $requestFilters) {
+    public function filter(RequestFilters $requestFilters): self
+    {
         // Filter products by all request params
         $this->query->byBrands($requestFilters->brands);
         $this->query->byCategory($requestFilters->categoryId);
         $this->query->byYear($requestFilters->yearId);
         $this->query->byAttributes($requestFilters->attributes);
+
+        return $this;
     }
 
     public function getQuery(): Builder
@@ -33,7 +39,8 @@ class ProductsQuery
         return $this->query;
     }
 
-    public function sort(Sort $sort) {
+    public function sort(Sort $sort)
+    {
         $sort->apply($this->query);
     }
 

@@ -15,13 +15,15 @@ use App\Models\Group;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Year;
-use App\Stats\Brands;
-use App\Stats\Categories;
+use App\Stats\AttributesQuery;
+use App\Stats\AttributeValueQuery;
+use App\Stats\CategoriesQuery;
 use App\Stats\ProductsQuery;
 use App\Stats\RequestFilters;
 use App\Stats\Sort;
 use App\Stats\StatsByBrand;
-use App\Stats\Years;
+use App\Stats\SubQuery;
+use App\Stats\YearsQuery;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -48,78 +50,40 @@ class StatsController extends Controller
         $requestFilters = new RequestFilters($request);
         $requestSort = new Sort($request);
 
-        // Base products list
 
         $products = new ProductsQuery();
         $products->filter($requestFilters);
 
-        // Next - available params for each filter,
+        // available params for each filter,
         // list of params must be filtered by products filtered by all other params except the param itself
         // Example: when filtered by year and brand, we must show only years available for products filtered by selected brand,
         // and only brands available for products filtered by selected year
 
-        // Get brands and filter by products
+        $brands = (new AttributeValueQuery())
+            ->filter($requestFilters)
+            ->get();
 
-        $brands = new Brands($requestFilters->categoryId, $requestFilters->yearId, $requestFilters->attributes);
-        $brands = $brands->get();
+        $categories = (new CategoriesQuery())
+            ->filter($requestFilters)
+            ->get();
 
-        // Get categories (product types) and filter by filtered products
+        $years = (new YearsQuery())
+            ->filter($requestFilters)
+            ->get();
 
-        $categories = new Categories($requestFilters->brands, $requestFilters->yearId, $requestFilters->attributes);
-        $categories = $categories->get();
-
-        // Get years, filter by products filtered by other params
-        // Maybe we not need to filter at all, but within its better
-
-        $years = new Years($requestFilters->categoryId, $requestFilters->brands, $requestFilters->attributes);
-        $years = $years->get();
-
-        // Get available attributes (not just values), we can filter it by all another params
-
-        $attributes = Attribute::query()
-            ->whereHas('values', function (Builder $query) use ($requestFilters) {
-                $query->whereHasMorph(
-                    'attributable',
-                    Product::class,
-                    function (Builder $query) use ($requestFilters) {
-                        /** @var Product $query */
-                        $query->byBrands($requestFilters->brands);
-                        $query->byCategory($requestFilters->categoryId);
-                        $query->byYear($requestFilters->yearId);
-                        $query->byAttributes($requestFilters->attributes);
-                    });
-            })
-            ->where(function ($query) use ($requestFilters) {
-                $query->where('group_id', $requestFilters->groupId);
-                $query->orWhereNull('group_id');
-            })
-            ->orderBy('order')
+        $attributes = (new AttributesQuery())
+            ->filter($requestFilters)
             ->get();
 
         // Only available options for attributes
 
-        $attributesValuesQuery = AttributeValue::query()
-            ->select('value', 'attribute_id')
-            ->whereHasMorph(
-                'attributable',
-                Product::class,
-                function (Builder $query) use ($requestFilters) {
-                    /** @var Product $query */
-                    $query->byBrands($requestFilters->brands);
-                    $query->byCategory($requestFilters->categoryId);
-                })
-            ->where(function ($query) use ($requestFilters) {
-                /** @var Product $query */
-                $query->byYear($requestFilters->yearId);
-            })
-            ->whereHas('attribute', function (Builder $query) {
-                $query->where('data_type', '!=', 'comment');
-            });
+        $attributesValuesQuery = new AttributeValueQuery();
+        $attributesValuesQuery->filter($requestFilters);
 
         if ($requestFilters->attributes) {
             // When having attributes, we need to filter available attributes values only by other attribute values
 
-            $attributesValuesQuery->where(function ($query) use ($attributes, $requestFilters) {
+            $attributesValuesQuery->query->where(function ($query) use ($attributes, $requestFilters) {
                 // To make it we need get all available attributes before and for each of them get values
 
                 foreach ($attributes as $attribute) {
@@ -138,12 +102,6 @@ class StatsController extends Controller
                 }
             });
         }
-
-        // Order attributes values by value, firstly as number, than as string
-        $attributesValuesQuery
-            ->groupBy('value', 'attribute_id')
-            ->orderBy(DB::raw('value * 1'))
-            ->orderBy('value');
 
         $attributesValues = $attributesValuesQuery->get();
 
