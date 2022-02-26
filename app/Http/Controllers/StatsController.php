@@ -17,6 +17,7 @@ use App\Models\Category;
 use App\Models\Year;
 use App\Stats\AttributesQuery;
 use App\Stats\AttributeValueQuery;
+use App\Stats\BrandsQuery;
 use App\Stats\CategoriesQuery;
 use App\Stats\ProductsQuery;
 use App\Stats\RequestFilters;
@@ -59,7 +60,7 @@ class StatsController extends Controller
         // Example: when filtered by year and brand, we must show only years available for products filtered by selected brand,
         // and only brands available for products filtered by selected year
 
-        $brands = (new AttributeValueQuery())
+        $brands = (new BrandsQuery())
             ->filter($requestFilters)
             ->get();
 
