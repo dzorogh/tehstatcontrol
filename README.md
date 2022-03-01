@@ -3,7 +3,7 @@ Statistics website, SPA
 * Using Excel data upload and edit
 * Dynamic filters and charts
 
-To run use `composer install` and `npm run prod`
+To run use `composer install` and `npm run prod`, for Excel reads you need to run queue workers. 
 
 Used techs:
 
