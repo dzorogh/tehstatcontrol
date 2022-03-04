@@ -2,6 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    @font-face {
+        font-family: 'Proxima Nova';
+        src: url('/fonts/Proxima Nova/ProximaNova-Regular/ProximaNova-Regular.eot?') format('eot'),
+        url('/fonts/Proxima Nova/ProximaNova-Regular/ProximaNova-Regular.otf')  format('opentype'),
+        url('/fonts/Proxima Nova/ProximaNova-Regular/ProximaNova-Regular.woff') format('woff'),
+        url('/fonts/Proxima Nova/ProximaNova-Regular/ProximaNova-Regular.ttf')  format('truetype'),
+        url('/fonts/Proxima Nova/ProximaNova-Regular/ProximaNova-Regular.svg#ProximaNova-Regular') format('svg');
+        font-weight: 500;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: 'Proxima Nova';
+        src: url('/fonts/Proxima Nova/ProximaNova-RegularIt/ProximaNova-RegularIt.eot?') format('eot'),
+        url('/fonts/Proxima Nova/ProximaNova-RegularIt/ProximaNova-RegularItRegularIt.otf')  format('opentype'),
+        url('/fonts/Proxima Nova/ProximaNova-RegularIt/ProximaNova-RegularIt.woff') format('woff'),
+        url('/fonts/Proxima Nova/ProximaNova-RegularIt/ProximaNova-RegularIt.ttf')  format('truetype'),
+        url('/fonts/Proxima Nova/ProximaNova-RegularIt/ProximaNova-RegularIt.svg#ProximaNova-RegularIt') format('svg');
+        font-weight: 500;
+        font-style: italic;
+    }
+
+    @font-face {
+        font-family: 'Proxima Nova';
+        src: url('/fonts/Proxima Nova/ProximaNova-Bold/ProximaNova-Bold.eot?') format('eot'),
+        url('/fonts/Proxima Nova/ProximaNova-Bold/ProximaNova-Bold.otf')  format('opentype'),
+        url('/fonts/Proxima Nova/ProximaNova-Bold/ProximaNova-Bold.woff') format('woff'),
+        url('/fonts/Proxima Nova/ProximaNova-Bold/ProximaNova-Bold.ttf')  format('truetype'),
+        url('/fonts/Proxima Nova/ProximaNova-Bold/ProximaNova-Bold.svg#ProximaNova-Bold') format('svg');
+        font-weight: bold;
+        font-style: normal;
+    }
+
+    @font-face {
+        font-family: 'Proxima Nova';
+        src: url('/fonts/Proxima Nova/ProximaNova-Light/ProximaNova-Light.eot?') format('eot'),
+        url('/fonts/Proxima Nova/ProximaNova-Light/ProximaNova-Light.otf')  format('opentype'),
+        url('/fonts/Proxima Nova/ProximaNova-Light/ProximaNova-Light.woff') format('woff'),
+        url('/fonts/Proxima Nova/ProximaNova-Light/ProximaNova-Light.ttf')  format('truetype'),
+        url('/fonts/Proxima Nova/ProximaNova-Light/ProximaNova-Light.svg#ProximaNova-Light') format('svg');
+        font-weight: 300;
+        font-style: normal;
+    }
+}
+
 @layer utilities {
     .columns-fill-auto {
         column-fill: auto

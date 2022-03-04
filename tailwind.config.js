@@ -1,4 +1,5 @@
 // const defaultTheme = require('tailwindcss/defaultTheme');
+const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
   content: [
@@ -9,8 +10,10 @@ module.exports = {
   ],
   theme: {
     extend: {
-
-    },
+      fontFamily: {
+        'sans': ['Proxima Nova', ...defaultTheme.fontFamily.sans],
+      },
+    }
   },
   plugins: [
     require('@tailwindcss/typography'),
