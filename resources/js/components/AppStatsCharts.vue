@@ -88,8 +88,11 @@ const chartData = computed<ChartData>(() => ({
 
 const breakpoints = useBreakpoints(breakpointsTailwind);
 
+
+const greaterMd = breakpoints.greater('md');
+
 const chartItemsMax = computed(() => {
-  return breakpoints.isGreater('md') ? 10 : 5;
+  return greaterMd.value ? 10 : 5;
 })
 
 const chartOptions = computed<ChartOptions<'line' | 'bar'>>(() => ({
