@@ -36,7 +36,7 @@
     <th
       v-for="(attribute, filterName) in columns"
       :key="filterName"
-      class="w-40"
+      class="w-auto"
       :class="[...cellClass]"
     >
       <AppStatsHeadingTitle
