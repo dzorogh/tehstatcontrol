@@ -130,10 +130,12 @@ class Attribute extends Resource
 
             Boolean::make(__('Разделять по годам'), 'by_year')
                 ->default(false)
-                ->readonly(function ($request) {
-                    return $request->isUpdateOrUpdateAttachedRequest();
-                })
-                ->help('Можно редактировать только при создании атрибута'),
+//                ->readonly(function ($request) {
+//                    return $request->isUpdateOrUpdateAttachedRequest();
+//                })
+                ->help('Можно редактировать только при создании атрибута. 
+                Если изменить настройку при имеющихся данных, то могут быть проблемы с наложением данных. 
+                Лучше создать новый атрибут, а этот скрыть.'),
 
             Boolean::make(__('Показывать на графике'), 'show_on_chart')
                 ->default(false),
