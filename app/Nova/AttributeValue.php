@@ -48,24 +48,26 @@ class AttributeValue extends Resource
      */
     public function title()
     {
-        $result = $this->attribute->title;
+        if ($this->attribute) {
+            $result = $this->attribute->title;
 
-        if ($this->year) {
-            $result .= ' за ' . $this->year->value . 'г. ';
-        }
-
-        if ($this->attributable) {
-
-            if ($this->attributable_type === 'brand') {
-                $result .= ' у бренда ' . $this->attributable->title;
+            if ($this->year) {
+                $result .= ' за ' . $this->year->value . 'г. ';
             }
 
-            if ($this->attributable_type === 'product') {
-                $result .= ' у товара ' . $this->attributable->title;
+            if ($this->attributable) {
+
+                if ($this->attributable_type === 'brand') {
+                    $result .= ' у бренда ' . $this->attributable->title;
+                }
+
+                if ($this->attributable_type === 'product') {
+                    $result .= ' у товара ' . $this->attributable->title;
+                }
             }
         }
 
-        return $result;
+        return '';
     }
 
     /**
