@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,6 +20,17 @@ class Attribute extends Model
 
     protected $table = 'stats_attributes';
     protected $fillable = ['title'];
+
+    protected static function booted()
+    {
+        static::addGlobalScope('visible', function (Builder $builder) {
+            $builder->where('is_hidden', false);
+        });
+    }
+
+    public function scopeWithHidden() {
+        return $this->withoutGlobalScope('visible');
+    }
 
     public function group(): BelongsTo
     {

@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\BelongsTo;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\HasMany;
-use Laravel\Nova\Fields\HasOne;
+
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
 use Laravel\Nova\Fields\Select;
@@ -84,6 +84,10 @@ class Attribute extends Resource
     {
         return [
             ID::make(__('ID'), 'id')->sortable(),
+
+            Boolean::make(__('Скрыт'), 'is_hidden')
+                ->default(false),
+
             Text::make(__('Название'), 'title')
                 ->rules('required'),
 
@@ -91,12 +95,11 @@ class Attribute extends Resource
                 ->nullable()
                 ->hideFromIndex(),
 
-            Boolean::make(__('Описание'), 'description')
-                ->showOnIndex()
-                ->hideFromDetail()
-                ->hideWhenCreating()
-                ->hideWhenUpdating()
-            ,
+//            Boolean::make(__('Описание'), 'description')
+//                ->showOnIndex()
+//                ->hideFromDetail()
+//                ->hideWhenCreating()
+//                ->hideWhenUpdating(),
 
             BelongsTo::make(__('Группа данных'), 'group', Group::class)
                 ->nullable()
@@ -126,7 +129,11 @@ class Attribute extends Resource
                 ->default('asc'),
 
             Boolean::make(__('Разделять по годам'), 'by_year')
-                ->default(false),
+                ->default(false)
+                ->readonly(function ($request) {
+                    return $request->isUpdateOrUpdateAttachedRequest();
+                })
+                ->help('Можно редактировать только при создании атрибута'),
 
             Boolean::make(__('Показывать на графике'), 'show_on_chart')
                 ->default(false),
@@ -197,7 +204,7 @@ class Attribute extends Resource
      */
     public static function indexQuery(NovaRequest $request, $query)
     {
-        return $query->when(empty($request->get('orderByDirection')), function (Builder $query) {
+        return $query->withHidden()->when(empty($request->get('orderByDirection')), function (Builder $query) {
             $query->getQuery()->orders = [];
 
             return $query->orderBy('group_id')->orderBy('order');

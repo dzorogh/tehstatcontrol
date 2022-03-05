@@ -53,8 +53,8 @@ class StatsByBrand
 
         if ($this->yearId) {
             $query->where(function ($query) {
-               $query->where('year_id', $this->yearId);
-               $query->orWhereNull('year_id');
+                $query->where('year_id', $this->yearId);
+                $query->orWhereNull('year_id');
             });
         }
 
@@ -80,7 +80,7 @@ class StatsByBrand
 
     public function getAttributes(): \Illuminate\Database\Eloquent\Collection|array
     {
-        return Attribute::whereGroupId($this->groupId)->where('show_on_chart', true)->orderBy('order')->get();
+        return Attribute::whereGroupId($this->groupId)->where('show_on_chart', true)->orderBy('order')->orderBy('title')->get();
     }
 
     #[ArrayShape(['brands' => "array", 'values' => "array"])]
