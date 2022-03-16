@@ -142,7 +142,16 @@ class StatsExport implements FromQuery, ShouldAutoSize, WithMapping, WithHeading
             $year_id = $column['year_id'];
 
 //            $result[] = $row->values->where('attribute_id', $attribute_id)->where('year_id', $year_id)->first()->value ?? null;
-            $result[] = $keyed->get($attribute_id . '.' . $year_id)->value ?? null;
+            $value = $keyed->get($attribute_id . '.' . $year_id)->value ?? null;
+
+            if ($value) {
+                $value = trim($value);
+                if ($value[0] == '=') { // disable formulas
+                    $value = "'" . $value;
+                }
+            }
+
+            $result[] = $value;
         }
 
         return $result;
