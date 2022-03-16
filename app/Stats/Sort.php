@@ -16,12 +16,15 @@ class Sort
     private string $type;
     private string $direction;
     private ?int $attributeId;
+    private RequestFilters $requestFilters;
 
-    function __construct(ProductsRequest $request)
+    function __construct(ProductsRequest $request, RequestFilters $requestFilters)
     {
         $this->type = $request->validated('sort.type', 'title');
         $this->direction = $request->validated('sort.direction', 'asc');
         $this->attributeId = $request->validated('sort.attributeId', null);
+
+        $this->requestFilters = $requestFilters;
     }
 
     public function apply(Builder &$query)
@@ -84,6 +87,7 @@ class Sort
                 ->where('attributable_type', 'product')
                 ->whereColumn('stats_products.id', 'attributable_id')
                 ->where('attribute_id', $this->attributeId)
+                ->byYear($this->requestFilters->yearId)
                 ->limit(1),
             $this->direction
         );
@@ -94,6 +98,7 @@ class Sort
                 ->where('attributable_type', 'product')
                 ->whereColumn('stats_products.id', 'attributable_id')
                 ->where('attribute_id', $this->attributeId)
+                ->byYear($this->requestFilters->yearId)
                 ->limit(1),
             $this->direction
         );

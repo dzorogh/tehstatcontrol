@@ -49,7 +49,7 @@ class StatsController extends Controller
     {
 
         $requestFilters = new RequestFilters($request);
-        $requestSort = new Sort($request);
+        $requestSort = new Sort($request, $requestFilters);
 
 
         $products = new ProductsQuery();
