@@ -107,9 +107,13 @@ const sortedFilterAttributes = computed(() => {
 });
 
 const sortedAttributeValues = (attribute: Attribute) => {
-  return attribute.values.sort((a, b) => {
-    return (formatDataType(attribute.dataType, a.value) + '').localeCompare(formatDataType(attribute.dataType, b.value), ['en', 'ru'], {numeric: true});
-  })
+  if (attribute.dataType === 'country') {
+    return attribute.values.sort((a, b) => {
+      return (formatDataType(attribute.dataType, a.value) + '').localeCompare(formatDataType(attribute.dataType, b.value), ['en', 'ru'], {numeric: true});
+    })
+  }
+  
+  return attribute.values;
 }
 
 const emptyFilters: RequestFilters = {
