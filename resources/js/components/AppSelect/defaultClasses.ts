@@ -69,13 +69,14 @@ export default {
     'bg-zinc-200',
     'top-full',
     'left-0',
-    'right-0',
+    // 'right-0',
     'rounded',
     'mt-1',
     'shadow-md',
     'overflow-auto',
     'z-10',
     'max-h-[50vh]',
+    'min-w-full'
   ],
   options: [
     'divide-y',
