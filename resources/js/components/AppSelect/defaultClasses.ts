@@ -92,7 +92,7 @@ export default {
     'hover:bg-zinc-100',
   ],
   optionLabel: [
-    'grow'
+    'grow',
   ],
   optionIcon: [
     'w-6',
