@@ -5,7 +5,7 @@
       {{ year }} г. | Лицензия от 10.11.2010 г.
     </div>
     
-    <div class="flex grow gap-6 justify-center items-center lg:flex-row lg:grow-0 lg:ml-auto">
+    <div class="flex grow gap-6 justify-center items-center lg:flex-row lg:flex-none lg:ml-auto">
       <img
         src="/images/iso.svg"
         alt="ISO"
