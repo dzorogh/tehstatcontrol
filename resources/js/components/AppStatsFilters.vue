@@ -50,7 +50,7 @@
       >
         <AppSelect
           :model-value="getAttributeFilter(attribute.id)"
-          :options="attribute.values"
+          :options="sortedAttributeValues(attribute)"
           :title="attribute.title"
           
           :option-label="getAttributeOptionLabel.bind(null, attribute)"
@@ -102,9 +102,15 @@ const emit = defineEmits<{
 
 const sortedFilterAttributes = computed(() => {
   return [...props.availableFilters.attributes].sort((a, b) => {
-    return a.groupId - b.groupId || a.order - b.order || a.title.localeCompare(b.title);
+    return a.groupId - b.groupId || a.order - b.order || a.title.localeCompare(b.title, ['en', 'ru'], {numeric: true});
   });
 });
+
+const sortedAttributeValues = (attribute: Attribute) => {
+  return attribute.values.sort((a, b) => {
+    return (formatDataType(attribute.dataType, a.value) + '').localeCompare(formatDataType(attribute.dataType, b.value), ['en', 'ru'], {numeric: true});
+  })
+}
 
 const emptyFilters: RequestFilters = {
   brandsIds: [],
