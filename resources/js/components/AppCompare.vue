@@ -116,8 +116,6 @@
                       :country="getValue(attribute, product)"
                     />
                     
-                    
-                    
                     <span>
                       {{ formatDataType(attribute.dataType, getValue(attribute, product)) }}
                     </span>
