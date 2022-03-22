@@ -86,6 +86,7 @@
                   <div class="py-3 px-4 w-60">
                     {{ attribute.title }}
                   </div>
+                  
                   <div
                     v-if="attribute.byYear"
                     class="flex-none w-20 divide-y divide-slate-400"
@@ -105,9 +106,23 @@
                   :key="product.id"
                   class="w-64"
                 >
-                  <template v-if="!attribute.byYear && product.valuesByAttributeIdAndYearId[attribute.id]">
-                    {{ formatDataType(attribute.dataType, getValue(attribute, product)) }}
-                  </template>
+                  <div
+                    v-if="!attribute.byYear && product.valuesByAttributeIdAndYearId[attribute.id]"
+                    class="flex flex-row gap-4 items-center"
+                  >
+                    <country-flag
+                      v-if="attribute.dataType === 'country'"
+                      class="block flex-none !my-0"
+                      :country="getValue(attribute, product)"
+                    />
+                    
+                    
+                    
+                    <span>
+                      {{ formatDataType(attribute.dataType, getValue(attribute, product)) }}
+                    </span>
+                  </div>
+                  
                   <div
                     v-else-if="attribute.byYear"
                     class="divide-y divide-slate-400"
@@ -146,6 +161,8 @@ import { useStore } from '../stores/main';
 import { Year } from '../types/Year';
 import { formatDataType } from '../formatters/valueFormatters';
 import { TrashIcon } from '@heroicons/vue/outline';
+import CountryFlag from 'vue-country-flag-next';
+import { useStorage } from '@vueuse/core';
 
 setTitle('Сравнение');
 
@@ -153,7 +170,7 @@ const router = useRouter();
 const route = useRoute();
 const store = useStore();
 
-const filterType = ref<'all' | 'difference'>('all');
+const filterType = useStorage<'all' | 'difference'>('compareType', 'all');
 const loading = ref(false);
 const attributes = ref<Attribute[]>([]);
 const products = ref<Product[]>([]);
@@ -259,7 +276,7 @@ const filteredAttributes = computed(() => {
         });
         
         if (tempValue === undefined) {
-          tempValue = allYearsValues.join('-')
+          tempValue = allYearsValues.join('-');
         } else {
           if (tempValue !== allYearsValues.join('-')) {
             hasDifference = true;
@@ -287,7 +304,6 @@ const filteredAttributes = computed(() => {
     //   console.log(attribute, hasDifference, tempValue)
     // }
     
-    
     if (filterType.value === 'all') {
       return hasValues;
     }
@@ -295,18 +311,19 @@ const filteredAttributes = computed(() => {
     if (filterType.value === 'difference') {
       return hasValues && hasDifference;
     }
-  }).sort((a, b) => {
-    return a.title.localeCompare(b.title)
-  });
+  })
+    .sort((a, b) => {
+      return a.title.localeCompare(b.title);
+    });
 });
 
 const getValue = (attribute, product) => {
-  return product.valuesByAttributeIdAndYearId[attribute.id]?.value || '—'
-}
+  return product.valuesByAttributeIdAndYearId[attribute.id]?.value || '—';
+};
 
 const getValueByYear = (year, attribute, product) => {
-  return product.valuesByAttributeIdAndYearId[attribute.id + '-' + year.id]?.value || '—'
-}
+  return product.valuesByAttributeIdAndYearId[attribute.id + '-' + year.id]?.value || '—';
+};
 
 </script>
 
