@@ -1,7 +1,7 @@
 <template>
   <div
-    class="fixed top-10 bottom-0 z-20 py-6 w-12 max-w-[90vw] text-zinc-100 bg-zinc-900 transition-[width] lg:top-24 "
-    :class="{'w-80 lg:w-80': menuOpen, 'lg:w-20 w-0': !menuOpen}"
+    class="fixed top-10 bottom-0 z-20 py-6 max-w-[90vw] text-zinc-100 bg-zinc-900 transition-[width] lg:top-24"
+    :class="{'w-80 lg:w-80': menuOpen, 'w-12 lg:w-20 w-0': !menuOpen}"
   >
     <div class="px-3 h-full lg:px-5">
       <div class="flex flex-col gap-6 h-full lg:gap-8">
@@ -57,8 +57,8 @@
           />
           
           <span
-            v-if="store.compareIds.length"
-            class="flex overflow-hidden absolute -top-2 -right-2 justify-center items-center w-5 h-5 text-sm text-white bg-teal-400 rounded-full"
+            v-if="store.compareIds.length && (menuOpen || lg)"
+            class="flex overflow-hidden -top-2 -right-2 justify-center items-center ml-4 w-5 h-5 text-sm text-white bg-teal-400 rounded-full lg:absolute"
           >
             {{ store.compareIds.length }}
           </span>
