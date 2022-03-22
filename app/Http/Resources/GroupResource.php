@@ -25,6 +25,8 @@ class GroupResource extends JsonResource
             'icon' => $this->icon,
             'description' => $this->description,
             'slug' => $this->slug,
+            'order' => $this->order,
+            'attributes' => AttributeResource::collection($this->whenLoaded('attributes'))
         ];
     }
 }

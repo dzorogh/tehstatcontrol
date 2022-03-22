@@ -6,6 +6,7 @@ use App\Models\Attribute;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Group;
+use App\Models\Product;
 use App\Models\Year;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -91,7 +92,7 @@ class ProductsRequest extends FormRequest
                 'integer',
                 Rule::exists((new Attribute())->getTable(), 'id')
             ],
-            'page' => ['required', 'integer', 'min:1'],
+            'page' => ['nullable', 'integer', 'min:1'],
             'sort.type' => [Rule::in('title', 'category', 'brand', 'attribute')],
             'sort.direction' => [Rule::in('asc', 'desc')],
             'sort.attributeId' => [
@@ -99,6 +100,14 @@ class ProductsRequest extends FormRequest
                 Rule::exists((new Attribute())->getTable(), 'id')
             ],
 
+            'ids' => [
+                'array',
+                'nullable'
+            ],
+            'ids.*' => [
+                'integer',
+                Rule::exists((new Product())->getTable(), 'id')
+            ]
         ];
     }
 }
