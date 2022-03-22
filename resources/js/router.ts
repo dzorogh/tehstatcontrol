@@ -6,6 +6,7 @@ import AppStats from './components/AppStats.vue';
 import AppContacts from './components/AppContacts.vue';
 import AppLogin from './components/AppLogin.vue';
 import AppBody from './components/AppBody.vue';
+import AppCompare from './components/AppCompare.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -25,6 +26,11 @@ const routes: Array<RouteRecordRaw> = [
         name: 'stats',
         path: '/stats/:group',
         component: AppStats,
+      },
+      {
+        name: 'compare',
+        path: '/compare/',
+        component: AppCompare,
       },
       {
         name: 'contacts',

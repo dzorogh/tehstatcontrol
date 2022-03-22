@@ -36,6 +36,18 @@ class ProductResource extends JsonResource
         $valuesResourceCollection->preserveKeys = true;
 
 
+        $valuesByAttributeIdAndYearId = collect([]);
+        if ($this->relationLoaded('values')) {
+            $valuesByAttributeIdAndYearId = $this->values->keyBy(function ($item, $key) {
+                if (!$item['year_id']) {
+                    return $item['attribute_id'];
+                } else {
+                    return $item['attribute_id'] . '-' . $item['year_id'];
+                }
+            });
+        }
+
+
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -47,7 +59,11 @@ class ProductResource extends JsonResource
             'category' => new CategoryResource(
                 $this->whenLoaded('category')
             ),
+            /*'values' => AttributeValueResource::collection(
+                $this->whenLoaded('values')
+            ),*/
             'valuesByAttributeId' => $valuesResourceCollection,
+            'valuesByAttributeIdAndYearId' => $valuesByAttributeIdAndYearId
         ];
     }
 }

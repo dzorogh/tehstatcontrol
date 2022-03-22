@@ -11,4 +11,5 @@ export interface Product {
     title: string;
   };
   valuesByAttributeId: any[]
+  valuesByAttributeIdAndYearId: any[]
 }

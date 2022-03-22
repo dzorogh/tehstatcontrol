@@ -31,7 +31,38 @@
             :title="item.title"
           />
         </router-link>
-        
+  
+        <router-link
+          :to="{name: 'compare', query: {p: store.compareIds}}"
+          class="group flex relative flex-row items-center hover:text-teal-300"
+          :active-class="'text-teal-300 cursor-default'"
+          @click="closeMenuWithTimeout"
+        >
+          <span
+            v-if="menuOpen || lg"
+            class="flex-none w-6 lg:w-10"
+          >
+            <ScaleIcon />
+          </span>
+    
+          <span
+            v-if="menuOpen"
+            class="ml-4 whitespace-nowrap"
+          >
+            Сравнение
+          </span>
+    
+          <AppTooltip
+            title="Сравнение"
+          />
+          
+          <span
+            v-if="store.compareIds.length"
+            class="flex overflow-hidden absolute -top-2 -right-2 justify-center items-center w-5 h-5 text-sm text-white bg-teal-400 rounded-full"
+          >
+            {{ store.compareIds.length }}
+          </span>
+        </router-link>
         
         <div
           v-if="debouncedMenuOpen && menuOpen"
@@ -94,6 +125,7 @@
 <script setup lang="ts">
 import {
   InformationCircleIcon, PresentationChartLineIcon, CogIcon, ThumbUpIcon, StarIcon, LogoutIcon,
+  ScaleIcon
 } from '@heroicons/vue/outline';
 import {
   computed, reactive, ref, RenderFunction,
@@ -102,7 +134,7 @@ import axios from 'axios';
 import router from '../router';
 import { useStore } from '../stores/main';
 import { storeToRefs } from 'pinia';
-import { breakpointsTailwind, useBreakpoints, useDebounce } from '@vueuse/core';
+import { breakpointsTailwind, useBreakpoints, useDebounce, useStorage } from '@vueuse/core';
 import AppTooltip from './AppTooltip.vue';
 
 const store = useStore();

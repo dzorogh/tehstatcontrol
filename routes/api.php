@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ApiLogoutController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StatsController;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -30,6 +31,8 @@ Route::middleware('auth')->group(function() {
     Route::get('/stats/groups', [StatsController::class, 'groups']);
     Route::get('/stats/groups/{group}', [StatsController::class, 'group']);
     Route::post('/stats/products', [StatsController::class, 'products']);
+
+    Route::get('/products/', [ProductController::class, 'getList']);
 
     Route::get('/logout', ApiLogoutController::class);
 });
