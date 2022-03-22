@@ -37,6 +37,11 @@ class Product extends Model
         return $this->morphMany(AttributeValue::class, 'attributable');
     }
 
+    public function attributeValues()
+    {
+        return $this->morphMany(AttributeValue::class, 'attributable');
+    }
+
     public function scopeByBrands($query, array $brands = null)
     {
         if ($brands && count($brands) > 0) {

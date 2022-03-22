@@ -1,5 +1,6 @@
 <template>
   <tr class="text-left text-zinc-200 bg-zinc-700">
+    <th class="w-0" />
     <th
       :class="['text-right', 'w-5']"
     />

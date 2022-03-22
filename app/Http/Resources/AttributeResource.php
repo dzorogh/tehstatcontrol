@@ -28,6 +28,7 @@ class AttributeResource extends JsonResource
             'ratingDirection' => $this->rating_direction,
             'groupId' => $this->group_id,
             'group' => new GroupResource($this->whenLoaded('group')),
+            'order' => $this->order,
             'values' => AttributeValueResource::collection($this->whenLoaded('values'))
         ];
     }

@@ -15,7 +15,7 @@
       
       <template v-if="list">
         <AppStatsCharts
-          v-if="list.chart"
+          v-if="list.chart && list.chart.length"
           class="overflow-auto"
           :selected="selectedChartTabIndex"
           :tabs="list.chart"
@@ -61,6 +61,8 @@
                   :cell-class="cellClass"
                   :columns="sortedColumns"
                   :row-number="list.meta.from + index"
+                  :compared="store.compare[product.id]"
+                  @compare="store.toggleCompare(product.id)"
                 />
               </tbody>
             </table>
@@ -89,6 +91,7 @@
 import { useRoute } from 'vue-router';
 import { computed, reactive, ref, watch } from 'vue';
 import axios, { AxiosError } from 'axios';
+// import { useStorage } from '@vueuse/core';
 
 // types
 import { Attribute } from '../types/Attribute';
@@ -107,9 +110,12 @@ import AppStatsDataRow from './AppStatsDataRow.vue';
 import AppStatsHeadingRow from './AppStatsHeadingRow.vue';
 import AppStatsCharts from './AppStatsCharts.vue';
 import AppStatsLoading from './AppLoading.vue';
+import { useStore } from '../stores/main';
 
 // use composables
 const route = useRoute();
+// const compare = useStorage('compare', {});
+const store = useStore();
 
 const pageLoading = ref(false);
 const listLoading = ref(false);
