@@ -7,7 +7,7 @@ export const useStore = defineStore('main', {
       menuOpen: false,
       metrikaId: 86667607,
       groups: [],
-      compare: JSON.parse(localStorage.getItem('compare')),
+      compare: JSON.parse(localStorage.getItem('compare')) || {},
     };
   },
   actions: {
@@ -24,6 +24,10 @@ export const useStore = defineStore('main', {
   },
   getters: {
     compareIds: (store) => {
+      if (!store.compare) {
+        return [];
+      }
+      
       return Object.keys(
         Object.fromEntries(
           Object.entries(store.compare)
