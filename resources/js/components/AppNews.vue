@@ -1,6 +1,6 @@
 <template>
   <h2 class="mb-7 text-xl font-bold lg:text-2xl">
-    Новости
+    Независимые рейтинги
   </h2>
 
   <div
