@@ -60,7 +60,7 @@ class StatsByBrand
 
         $query->with('brand');
         $query->select([
-            DB::raw('round(avg(value), 2) as avg'),
+            DB::raw('round(avg(value), 3) as avg'),
             'stats_products.brand_id'
         ]);
 
