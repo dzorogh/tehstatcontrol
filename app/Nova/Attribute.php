@@ -143,6 +143,9 @@ class Attribute extends Resource
             Boolean::make(__('Показывать фильтр'), 'show_filter')
                 ->default(true),
 
+            Boolean::make(__('Скрыть из сравнения'), 'is_hidden_from_compare')
+                ->default(false),
+
             Number::make(__('Порядок'), 'order')
                 ->nullable()
                 ->sortable(),

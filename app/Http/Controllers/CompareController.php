@@ -14,7 +14,7 @@ use App\Models\Year;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class ProductController extends Controller
+class CompareController extends Controller
 {
     public function getList(ProductsRequest $request): AnonymousResourceCollection
     {
@@ -28,7 +28,11 @@ class ProductController extends Controller
 
         $products = $productsQuery->get();
 
-        $attributes = Attribute::query()->orderBy('order')->orderBy('title')->get();
+        $attributes = Attribute::query()
+            ->where('is_hidden_from_compare', false)
+            ->orderBy('order')
+            ->orderBy('title')
+            ->get();
 
         $years = Year::query()->orderBy('value')->get();
 
