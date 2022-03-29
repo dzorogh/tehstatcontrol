@@ -55,7 +55,7 @@
               <div
                 v-for="product in products"
                 :key="product.id"
-                class="w-64"
+                class="flex flex-col w-64"
               >
                 <div class="mb-4 text-2xl font-bold text-zinc-400">
                   {{ product.brand.title }}
@@ -67,7 +67,7 @@
                 
                 <a
                   href="#"
-                  class="flex gap-1 items-center text-zinc-600 hover:text-teal-600"
+                  class="flex gap-1 items-center mt-auto text-zinc-600 hover:text-teal-600"
                   @click.prevent="removeProduct(product)"
                 >
                   <TrashIcon class="w-4 h-4" />
