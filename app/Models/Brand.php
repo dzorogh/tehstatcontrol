@@ -31,8 +31,8 @@ class Brand extends Model
 
     protected static function booted()
     {
-        static::deleting(function (Product $product) {
-            $product->values()->delete();
+        static::deleting(function (Brand $brand) {
+            $brand->values()->delete();
         });
     }
 }
