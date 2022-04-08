@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth')->group(function() {
     Route::get('/page/{page}', [PageController::class, 'show']);
     Route::get('/news', [PageController::class, 'news']);
+    Route::get('/news-types', [PageController::class, 'newsTypes']);
 
     Route::get('/stats/groups', [StatsController::class, 'groups']);
     Route::get('/stats/groups/{group}', [StatsController::class, 'group']);

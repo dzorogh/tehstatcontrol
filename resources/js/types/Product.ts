@@ -6,6 +6,7 @@ export interface Product {
   title: string;
   category: {
     title: string;
+    id: number;
   };
   brand: {
     title: string;

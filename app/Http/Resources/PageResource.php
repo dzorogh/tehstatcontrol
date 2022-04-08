@@ -21,6 +21,7 @@ class PageResource extends JsonResource
             'content' => $this->content,
             'excerpt' => $this->excerpt,
             'image' => $this->image,
+            'category' => new CategoryResource($this->whenLoaded('category'))
         ];
     }
 }

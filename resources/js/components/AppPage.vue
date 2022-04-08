@@ -10,6 +10,13 @@
         <AppPageTitle
           :title="page.title"
         />
+  
+        <div
+          v-if="page.category"
+          class="inline-block px-2 text-white bg-teal-500"
+        >
+          {{ page.category.title }}
+        </div>
       </div>
   
       <div class="grow shrink-0 gap-12 prose-sm lg:columns-2 lg:max-w-full lg:prose 2xl:columns-3 columns-fill-auto">
@@ -42,6 +49,7 @@ import AppPageTitle from './AppPageTitle.vue';
 import { setTitle } from '../title';
 import AppLoading from './AppLoading.vue';
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
+import { Product } from '../types/Product';
 
 const breakpoints = useBreakpoints(breakpointsTailwind);
 
@@ -56,7 +64,8 @@ interface Page {
   excerpt: string,
   image: string,
   id: number,
-  slug: string
+  slug: string,
+  category: Product['category']
 }
 
 const page = ref<Page>();
