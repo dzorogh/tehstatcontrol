@@ -13,7 +13,7 @@
           class="w-full"
         >
 
-        <div class="flex absolute inset-0 content-center items-center py-2 px-4 text-xs font-bold text-center text-white lg:py-12 lg:px-48 lg:text-3xl">
+        <div class="flex absolute inset-0 justify-center content-center items-center py-2 px-4 text-xs font-bold text-center text-white lg:py-12 lg:px-48 lg:text-3xl">
           <div>
             {{ slide.text }}
           </div>
