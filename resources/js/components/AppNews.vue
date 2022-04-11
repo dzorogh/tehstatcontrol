@@ -9,7 +9,9 @@
     >
       <div
         ref="tagContainer"
-        class="flex overflow-hidden gap-x-6 gap-y-2"
+        class="flex overflow-auto gap-x-6 gap-y-2 py-4"
+        @mouseenter="stopScrollAll"
+        @mousedown="stopScrollAll"
       >
         <a
           href="#"
@@ -22,39 +24,37 @@
         <a
           v-for="category in categories"
           :key="category.id"
-          :class="[...tagClasses(category.id)]"
+          :class="[...tagClasses(category)]"
           href="#"
-          @click.prevent="selectCategory(category.id)"
+          @click.prevent="selectCategory(category)"
         >
           {{ category.title }}
         </a>
       </div>
       
-      <a
-        v-if="!tagContainerScroll.arrivedState.right && isOverflowing"
-        href="#"
-        class="absolute -top-1 right-0 py-1 pl-10 text-zinc-400 hover:text-zinc-600 bg-gradient-to-r from-transparent via-white to-white"
-        @mouseenter.prevent="startScrollRight"
-        @mouseleave.prevent="stopScrollRight"
-        @mousedown.prevent="startScrollRight"
-        @mouseup.prevent="stopScrollRight"
-        @click.prevent
-      >
-        <ArrowCircleRightIcon class="w-7 h-7 " />
-      </a>
-  
-      <a
+      <div
         v-if="!tagContainerScroll.arrivedState.left && isOverflowing"
         href="#"
-        class="absolute -top-1 left-0 py-1 pr-10 text-zinc-400 hover:text-zinc-600 bg-gradient-to-l from-transparent via-white to-white "
+        class="absolute -top-1 left-0 py-5 pr-8 text-zinc-400 hover:text-zinc-600 bg-gradient-to-l from-transparent via-white to-white cursor-pointer user-select-none"
         @mouseenter.prevent="startScrollLeft"
-        @mouseleave.prevent="stopScrollLeft"
-        @mousedown.prevent="startScrollLeft"
-        @mouseup.prevent="stopScrollLeft"
-        @click.prevent
+        @mouseleave.prevent="stopScrollAll"
+        @click.prevent="selectPrevTag"
+        @contextmenu.prevent
       >
         <ArrowCircleLeftIcon class="w-7 h-7 " />
-      </a>
+      </div>
+  
+      <div
+        v-if="!tagContainerScroll.arrivedState.right && isOverflowing"
+        href="#"
+        class="absolute -top-1 right-0 py-5 pl-8 text-zinc-400 hover:text-zinc-600 bg-gradient-to-r from-transparent via-white to-white cursor-pointer user-select-none"
+        @mouseenter.prevent="startScrollRight"
+        @mouseleave.prevent="stopScrollAll"
+        @click.prevent="selectNextTag"
+        @contextmenu.prevent
+      >
+        <ArrowCircleRightIcon class="w-7 h-7 " />
+      </div>
     </div>
   </div>
   
@@ -105,7 +105,7 @@ import { computed, onMounted, ref } from 'vue';
 import { default as axios } from 'axios';
 import { Product } from '../types/Product';
 import { ArrowCircleRightIcon, ArrowCircleLeftIcon } from '@heroicons/vue/outline';
-import { useElementSize, useRafFn, useScroll, useWindowSize } from '@vueuse/core';
+import { useElementSize, useMouse, useRafFn, useScroll, useWindowSize } from '@vueuse/core';
 import { Pausable } from '@vueuse/shared';
 
 const props = defineProps<{
@@ -119,7 +119,12 @@ const props = defineProps<{
   }[] | null
 }>();
 
-const categoryId = ref<number | null>(null);
+const mouse = useMouse();
+const isTouchDevice = computed(() => {
+  return mouse.sourceType.value === 'touch';
+});
+
+const selectedCategory = ref<Product['category'] | null>(null);
 const categories = ref<Product['category'][]>();
 
 const scrollRight = ref<Pausable>();
@@ -129,6 +134,10 @@ onMounted(async () => {
   categories.value = (await axios.get('/api/news-types')).data.data;
   
   scrollRight.value = useRafFn(() => {
+    if (tagContainerScroll.x.value >= tagContainerSize.width.value) {
+      return scrollRight.value.pause();
+    }
+    
     tagContainer.value.scrollTo({
       left: tagContainerScroll.x.value + 4,
     });
@@ -137,6 +146,10 @@ onMounted(async () => {
   });
   
   scrollLeft.value = useRafFn(() => {
+    if (tagContainerScroll.x.value <= 0) {
+      return scrollLeft.value.pause();
+    }
+    
     tagContainer.value.scrollTo({
       left: tagContainerScroll.x.value - 4,
     });
@@ -146,19 +159,19 @@ onMounted(async () => {
 });
 
 const filteredNews = computed(() => {
-  if (!categoryId.value) {
+  if (!selectedCategory.value) {
     return props.news;
   }
   
   return props.news.filter((item) => {
-    return item.category.id === categoryId.value;
+    return item.category.id === selectedCategory.value.id;
   });
 });
 
 const tagClasses = (itemId) => {
   let activeClasses = [];
   
-  if (categoryId.value === itemId) {
+  if (selectedCategory.value === itemId) {
     activeClasses = ['bg-teal-500', 'text-white'];
   } else {
     activeClasses = ['text-zinc-400'];
@@ -175,39 +188,66 @@ const tagClasses = (itemId) => {
 };
 
 const selectCategory = (value) => {
-  categoryId.value = value;
+  selectedCategory.value = value;
 };
+
+const selectPrevTag = () => {
+  const currentIndex = categories.value.indexOf(selectedCategory.value)
+  const prevIndex = currentIndex > 0 ? currentIndex - 1 : null;
+  
+  if (prevIndex === null) {
+    selectCategory(null)
+  } else {
+    const prevCategory = categories.value[prevIndex];
+    selectCategory(prevCategory);
+  }
+}
+
+const selectNextTag = () => {
+  const currentIndex = categories.value.indexOf(selectedCategory.value)
+  const nextIndex = currentIndex < (categories.value.length - 1) ? (currentIndex + 1) : (categories.value.length - 1);
+  
+  const nextCategory = categories.value[nextIndex];
+  selectCategory(nextCategory);
+}
 
 const tagContainer = ref<HTMLElement | null>(null);
 const tagContainerScroll = useScroll(tagContainer);
 
 const startScrollRight = () => {
-  if (tagContainer.value) {
+  if (tagContainer.value && isTouchDevice.value) {
     scrollLeft.value.pause();
     scrollRight.value.resume();
   }
 };
 
-const stopScrollRight = () => {
-  if (tagContainer.value) {
-    scrollRight.value.pause();
-    scrollLeft.value.pause();
-  }
-};
+// const stopScrollRight = () => {
+//   if (tagContainer.value) {
+//     scrollRight.value.pause();
+//     scrollLeft.value.pause();
+//   }
+// };
 
 const startScrollLeft = () => {
-  if (tagContainer.value) {
+  if (tagContainer.value && isTouchDevice.value) {
     scrollRight.value.pause();
     scrollLeft.value.resume();
   }
 };
 
-const stopScrollLeft = () => {
+// const stopScrollLeft = () => {
+//   if (tagContainer.value) {
+//     scrollLeft.value.pause();
+//     scrollRight.value.pause();
+//   }
+// };
+
+const stopScrollAll = () => {
   if (tagContainer.value) {
     scrollLeft.value.pause();
     scrollRight.value.pause();
   }
-};
+}
 
 const tagContainerSize = useElementSize(tagContainer)
 
