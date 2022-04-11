@@ -17,7 +17,12 @@ class PageController extends Controller
 
     public function news(): \Illuminate\Http\Resources\Json\AnonymousResourceCollection
     {
-        return PageResource::collection(Page::whereNews(true)->with('category')->get());
+        $news = Page::whereNews(true)
+            ->with('category')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return PageResource::collection($news);
     }
 
     public function newsTypes()
