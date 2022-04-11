@@ -230,7 +230,7 @@ const tagContainer = ref<HTMLElement | null>(null);
 const tagContainerScroll = useScroll(tagContainer);
 
 const startScrollRight = () => {
-  if (tagContainer.value && isTouchDevice.value) {
+  if (tagContainer.value && !isTouchDevice) {
     scrollLeft.value.pause();
     scrollRight.value.resume();
   }
