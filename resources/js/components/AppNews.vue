@@ -9,33 +9,38 @@
     >
       <div
         ref="tagContainer"
-        class="flex overflow-auto gap-x-6 gap-y-2 py-4"
+        class="overflow-auto"
         @mouseenter="stopScrollAll"
         @mousedown="stopScrollAll"
       >
-        <a
-          href="#"
-          :class="[...tagClasses(null)]"
-          @click.prevent="selectCategory(null)"
+        <div
+          ref="tagContainerInner"
+          class="inline-flex gap-x-6 gap-y-2 py-4"
         >
-          Показать все
-        </a>
-        
-        <a
-          v-for="category in categories"
-          :key="category.id"
-          :class="[...tagClasses(category)]"
-          href="#"
-          @click.prevent="selectCategory(category)"
-        >
-          {{ category.title }}
-        </a>
+          <a
+            href="#"
+            :class="[...tagClasses(null)]"
+            @click.prevent="selectCategory(null)"
+          >
+            Показать все
+          </a>
+          
+          <a
+            v-for="category in categories"
+            :key="category.id"
+            :class="[...tagClasses(category)]"
+            href="#"
+            @click.prevent="selectCategory(category)"
+          >
+            {{ category.title }}
+          </a>
+        </div>
       </div>
       
       <div
         v-if="!tagContainerScroll.arrivedState.left && isOverflowing"
         href="#"
-        class="absolute -top-1 left-0 py-5 pr-8 text-zinc-400 hover:text-zinc-600 bg-gradient-to-l from-transparent via-white to-white cursor-pointer user-select-none"
+        class="absolute -top-1 -left-px py-5 pr-8 text-zinc-400 hover:text-zinc-600 bg-gradient-to-r from-white via-white cursor-pointer user-select-none"
         @mouseenter.prevent="startScrollLeft"
         @mouseleave.prevent="stopScrollAll"
         @click.prevent="selectPrevTag"
@@ -43,11 +48,11 @@
       >
         <ArrowCircleLeftIcon class="w-7 h-7 " />
       </div>
-  
+      
       <div
         v-if="!tagContainerScroll.arrivedState.right && isOverflowing"
         href="#"
-        class="absolute -top-1 right-0 py-5 pl-8 text-zinc-400 hover:text-zinc-600 bg-gradient-to-r from-transparent via-white to-white cursor-pointer user-select-none"
+        class="absolute -top-1 -right-px py-5 pl-8 text-zinc-400 hover:text-zinc-600 bg-gradient-to-l from-white via-white cursor-pointer user-select-none"
         @mouseenter.prevent="startScrollRight"
         @mouseleave.prevent="stopScrollAll"
         @click.prevent="selectNextTag"
@@ -57,6 +62,9 @@
       </div>
     </div>
   </div>
+  
+  {{ categories.indexOf(selectedCategory) }}
+  {{ categories.indexOf(selectedCategory) + 2 }}
   
   <div
     v-if="filteredNews"
@@ -105,7 +113,7 @@ import { computed, onMounted, ref } from 'vue';
 import { default as axios } from 'axios';
 import { Product } from '../types/Product';
 import { ArrowCircleRightIcon, ArrowCircleLeftIcon } from '@heroicons/vue/outline';
-import { useElementSize, useMouse, useRafFn, useScroll, useWindowSize } from '@vueuse/core';
+import { useElementBounding, useElementSize, useMouse, useRafFn, useScroll, useWindowSize } from '@vueuse/core';
 import { Pausable } from '@vueuse/shared';
 
 const props = defineProps<{
@@ -119,13 +127,38 @@ const props = defineProps<{
   }[] | null
 }>();
 
-const mouse = useMouse();
-const isTouchDevice = computed(() => {
-  return mouse.sourceType.value === 'touch';
-});
+const isTouchDevice = () => {
+  let isMobile = false;
+  if (navigator !== undefined && navigator !== null) {
+    if ('maxTouchPoints' in navigator) {
+      isMobile = navigator.maxTouchPoints > 0;
+    } else if ('msMaxTouchPoints' in navigator) {
+      const msNavigator = navigator as typeof navigator & {msMaxTouchPoints: number};
+      
+      isMobile = msNavigator.msMaxTouchPoints > 0;
+    
+    } else {
+      const mQ = window.matchMedia && matchMedia('(pointer:coarse)');
+      if (mQ && mQ.media === '(pointer:coarse)') {
+        isMobile = !!mQ.matches;
+      } else if ('orientation' in window) {
+        isMobile = true; // deprecated, but good fallback
+      } else {
+        // Only as a last resort, fall back to user agent sniffing
+        const UA = navigator!.userAgent;
+        isMobile = (
+          /\b(BlackBerry|webOS|iPhone|IEMobile)\b/i.test(UA) ||
+          /\b(Android|Windows Phone|iPad|iPod)\b/i.test(UA)
+        );
+      }
+    }
+  }
+  
+  return isMobile;
+};
 
 const selectedCategory = ref<Product['category'] | null>(null);
-const categories = ref<Product['category'][]>();
+const categories = ref<Product['category'][]>([]);
 
 const scrollRight = ref<Pausable>();
 const scrollLeft = ref<Pausable>();
@@ -191,25 +224,7 @@ const selectCategory = (value) => {
   selectedCategory.value = value;
 };
 
-const selectPrevTag = () => {
-  const currentIndex = categories.value.indexOf(selectedCategory.value)
-  const prevIndex = currentIndex > 0 ? currentIndex - 1 : null;
-  
-  if (prevIndex === null) {
-    selectCategory(null)
-  } else {
-    const prevCategory = categories.value[prevIndex];
-    selectCategory(prevCategory);
-  }
-}
 
-const selectNextTag = () => {
-  const currentIndex = categories.value.indexOf(selectedCategory.value)
-  const nextIndex = currentIndex < (categories.value.length - 1) ? (currentIndex + 1) : (categories.value.length - 1);
-  
-  const nextCategory = categories.value[nextIndex];
-  selectCategory(nextCategory);
-}
 
 const tagContainer = ref<HTMLElement | null>(null);
 const tagContainerScroll = useScroll(tagContainer);
@@ -229,7 +244,7 @@ const startScrollRight = () => {
 // };
 
 const startScrollLeft = () => {
-  if (tagContainer.value && isTouchDevice.value) {
+  if (tagContainer.value && !isTouchDevice && scrollLeft.value && scrollRight.value) {
     scrollRight.value.pause();
     scrollLeft.value.resume();
   }
@@ -243,21 +258,59 @@ const startScrollLeft = () => {
 // };
 
 const stopScrollAll = () => {
-  if (tagContainer.value) {
+  if (tagContainer.value && !isTouchDevice && scrollLeft.value && scrollRight.value) {
     scrollLeft.value.pause();
     scrollRight.value.pause();
   }
-}
+};
 
-const tagContainerSize = useElementSize(tagContainer)
+const tagContainerInner = ref<HTMLElement | null>(null);
+const tagContainerSize = useElementSize(tagContainer);
+const tagContainerInnerSize = useElementSize(tagContainerInner);
 
 const isOverflowing = computed(() => {
   if (tagContainer.value) {
-    return tagContainerSize.width.value < tagContainer.value.scrollWidth;
+    return tagContainerSize.width.value < tagContainerInnerSize.width.value;
   }
   
   return false;
-})
+});
 
+
+const selectPrevTag = () => {
+  const currentIndex = categories.value.indexOf(selectedCategory.value);
+  const prevIndex = currentIndex > 0 ? currentIndex - 1 : null;
+  
+  if (prevIndex === null) {
+    selectCategory(null);
+  } else {
+    const prevCategory = categories.value[prevIndex];
+    selectCategory(prevCategory);
+  }
+  
+  if (tagContainerInner.value) {
+    const el = tagContainerInner.value.children.item(currentIndex);
+  
+    if (el) {
+      el.scrollIntoView({behavior: 'smooth'});
+    }
+  }
+};
+
+const selectNextTag = () => {
+  const currentIndex = categories.value.indexOf(selectedCategory.value);
+  const nextIndex = currentIndex < (categories.value.length - 1) ? (currentIndex + 1) : (categories.value.length - 1);
+  
+  const nextCategory = categories.value[nextIndex];
+  selectCategory(nextCategory);
+  
+  if (tagContainerInner.value) {
+    const el = tagContainerInner.value.children.item(currentIndex + 2);
+    
+    if (el) {
+      el.scrollIntoView(true);
+    }
+  }
+};
 
 </script>
