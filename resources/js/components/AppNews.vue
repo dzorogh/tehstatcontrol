@@ -63,6 +63,7 @@
     </div>
   </div>
   
+  {{ tagContainerScroll.arrivedState.right }}
   <div
     v-if="filteredNews"
     class="grid gap-10 sm:grid-cols-2 md:grid-cols-3"
@@ -164,9 +165,9 @@ onMounted(async () => {
   categories.value = (await axios.get('/api/news-types')).data.data;
   
   scrollRight.value = useRafFn(() => {
-    if (tagContainerScroll.x.value >= tagContainerSize.width.value) {
-      return scrollRight.value.pause();
-    }
+    // if (tagContainerScroll.arrivedState.right) {
+    //   return scrollRight.value.pause();
+    // }
     
     tagContainer.value.scrollTo({
       left: tagContainerScroll.x.value + 4,
@@ -227,7 +228,7 @@ const tagContainer = ref<HTMLElement | null>(null);
 const tagContainerScroll = useScroll(tagContainer);
 
 const startScrollRight = () => {
-  if (tagContainer.value && !isTouchDevice) {
+  if (tagContainer.value && !isTouchDevice() && scrollLeft.value && scrollRight.value) {
     scrollLeft.value.pause();
     scrollRight.value.resume();
   }
@@ -241,7 +242,7 @@ const startScrollRight = () => {
 // };
 
 const startScrollLeft = () => {
-  if (tagContainer.value && !isTouchDevice && scrollLeft.value && scrollRight.value) {
+  if (tagContainer.value && !isTouchDevice() && scrollLeft.value && scrollRight.value) {
     scrollRight.value.pause();
     scrollLeft.value.resume();
   }
@@ -255,7 +256,7 @@ const startScrollLeft = () => {
 // };
 
 const stopScrollAll = () => {
-  if (tagContainer.value && !isTouchDevice && scrollLeft.value && scrollRight.value) {
+  if (tagContainer.value && !isTouchDevice() && scrollLeft.value && scrollRight.value) {
     scrollLeft.value.pause();
     scrollRight.value.pause();
   }
