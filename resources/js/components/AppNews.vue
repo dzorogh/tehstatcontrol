@@ -9,7 +9,7 @@
     >
       <div
         ref="tagContainer"
-        class="overflow-auto"
+        :class="{'overflow-auto': isTouchDevice(), 'overflow-hidden' : !isTouchDevice()}"
         @mouseenter="stopScrollAll"
         @mousedown="stopScrollAll"
       >
