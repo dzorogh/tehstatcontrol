@@ -63,7 +63,6 @@
     </div>
   </div>
   
-  {{ tagContainerScroll.arrivedState.right }}
   <div
     v-if="filteredNews"
     class="grid gap-10 sm:grid-cols-2 md:grid-cols-3"
