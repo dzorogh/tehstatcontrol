@@ -33,11 +33,34 @@ class StatsImport implements WithEvents, OnEachRow, WithHeadingRow, WithChunkRea
 {
     use RemembersRowNumber, RegistersEventListeners;
 
+
+    public function registerEvents(): array
+    {
+        return [
+            BeforeImport::class => function (BeforeImport $event) {
+                $totalRows = $event->getReader()->getTotalRows();
+
+                if (filled($totalRows)) {
+                    cache()->forever("total_rows", array_values($totalRows)[0]);
+                    cache()->forever("start_date", now()->unix());
+                }
+            },
+            AfterImport::class => function (AfterImport $event) {
+                cache(["end_date" => now()], now()->addMinute());
+                cache()->forget("total_rows");
+                cache()->forget("start_date");
+                cache()->forget("current_row");
+            },
+        ];
+    }
+
     public function onRow(Row $row)
     {
         HeadingRowFormatter::default('none');
 
         $rowIndex = $row->getIndex();
+        cache()->forever("current_row", $rowIndex);
+
         $row = $row->toArray();
 
         Log::info('Reading row', ['row' => $row, 'rowIndex' => $rowIndex]);
@@ -165,12 +188,12 @@ class StatsImport implements WithEvents, OnEachRow, WithHeadingRow, WithChunkRea
         }
     }
 
-    public static function beforeImport(BeforeImport $event)
-    {
-//        Brand::query()->delete();
-//        Product::query()->delete();
-//        AttributeValue::query()->delete();
-    }
+//    public static function beforeImport(BeforeImport $event)
+//    {
+////        Brand::query()->delete();
+////        Product::query()->delete();
+////        AttributeValue::query()->delete();
+//    }
 
     public static function importFailed(ImportFailed $event)
     {

@@ -56,8 +56,11 @@ class NovaServiceProvider extends NovaApplicationServiceProvider
      */
     protected function cards()
     {
+        $id = now()->unix();
+        session([ 'import' => $id ]);
+
         return [
-            new ExcelDataUpdate(new StatsExport, new StatsImport)
+            new ExcelDataUpdate(new StatsExport, new StatsImport($id))
         ];
     }
 

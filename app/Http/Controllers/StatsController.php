@@ -157,4 +157,15 @@ class StatsController extends Controller
             'chart' => $chart,
         ]);
     }
+
+    public function status()
+    {
+        return response([
+            'started' => filled(cache("start_date")),
+            'finished' => filled(cache("end_date")),
+            'current_row' => (int) cache("current_row"),
+            'total_rows' => (int) cache("total_rows"),
+            'percent' => filled(cache("start_date")) ? (int) (cache("current_row") / cache("total_rows") * 100) : 0
+        ]);
+    }
 }

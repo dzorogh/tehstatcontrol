@@ -13,6 +13,25 @@
         </div>
       </div>
       
+      
+      <div
+        v-if="importStatus"
+        class="max-w-md"
+      >
+        <div class="p-4 text-center">
+          Выполняется обновление базы данных: {{ importStatus }}%. Пожалуйста, подождите.
+        </div>
+        
+        <div class="w-full h-8 bg-gray-200 dark:bg-gray-700 rounded-full">
+          <div
+            class="p-4 h-full bg-blue-600 rounded-full"
+            :style="{
+              width: importStatus + '%'
+            }"
+          />
+        </div>
+      </div>
+      
       <template v-if="list">
         <AppStatsCharts
           v-if="list.chart && list.chart.length"
@@ -142,22 +161,38 @@ const requestParams = reactive<RequestParams>({
 });
 
 const list = ref<List>();
+const importStatus = ref(0);
 
 async function getList() {
   listLoading.value = true;
   
-  return axios.post('/api/stats/products', requestParams)
-    .then(({ data }) => {
-      list.value = data;
-      requestParams.page = list.value.meta.current_page;
-      requestParams.filters = list.value.requestFilters;
-    })
-    .catch((error: AxiosError) => {
-      alert(JSON.stringify(error.response.data, null, 2));
-    })
-    .finally(() => {
-      listLoading.value = false;
-    });
+  axios.get('/api/import-status').then((statusResponse) => {
+    if (statusResponse.data && statusResponse.data.started) {
+      importStatus.value = statusResponse.data.percent;
+    } else {
+      importStatus.value = 0;
+    }
+    
+    if (!importStatus.value) {
+      axios.post('/api/stats/products', requestParams)
+        .then(({ data }) => {
+          list.value = data;
+          requestParams.page = list.value.meta.current_page;
+          requestParams.filters = list.value.requestFilters;
+        })
+        .catch((error: AxiosError) => {
+          alert(JSON.stringify(error.response.data, null, 2));
+        })
+        .finally(() => {
+          listLoading.value = false;
+        });
+    } else {
+      setTimeout(() => {
+        getList();
+      }, 3000);
+    }
+    
+  });
 }
 
 function updateFilters(filters) {

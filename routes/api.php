@@ -36,7 +36,10 @@ Route::middleware('auth')->group(function() {
     Route::get('/products/', [CompareController::class, 'getList']);
 
     Route::get('/logout', ApiLogoutController::class);
+
 });
+
+Route::get('/import-status', [StatsController::class, 'status']);
 
 Route::get('/check-auth', function (\Illuminate\Http\Request $request) {
     $value = $request->session()->all();
